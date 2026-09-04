@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { passages, themes, sources, notes as notesTable } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
+import { ensureSeeded } from "@/db/seed";
 import {
   addNote,
   deleteNote,
@@ -47,6 +48,7 @@ export default async function PassagePage({
   const id = parseInt(idStr, 10);
   if (!Number.isFinite(id)) notFound();
 
+  await ensureSeeded();
   const passage = await db.query.passages.findFirst({
     where: eq(passages.id, id),
     with: {

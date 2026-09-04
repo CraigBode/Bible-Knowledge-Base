@@ -12,6 +12,7 @@ import {
   passageThemes,
 } from "@/db/schema";
 import { count } from "drizzle-orm";
+import { ensureSchema } from "@/db/seed";
 import { runSeed, runReset } from "@/lib/actions";
 import { BOOKS, THEMES, SOURCES, PASSAGES } from "@/db/seed-data";
 import { EXEGETICAL_STEPS, XREF_TYPES } from "@/lib/exegesis";
@@ -21,6 +22,7 @@ import { ConfirmButton } from "@/components/confirm-button";
 export const dynamic = "force-dynamic";
 
 export default async function SetupPage() {
+  await ensureSchema();
   const [[b], [p], [n], [w], [x], [t], [s], [ps], [pt]] = await Promise.all([
     db.select({ n: count() }).from(books),
     db.select({ n: count() }).from(passages),

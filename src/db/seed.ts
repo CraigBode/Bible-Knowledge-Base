@@ -12,6 +12,21 @@ import {
   passageSources,
 } from "@/db/schema";
 import { BOOKS, THEMES, SOURCES, PASSAGES } from "@/db/seed-data";
+import { SCHEMA_INIT_SQL } from "@/db/schema-init";
+
+/**
+ * Creates every table/enum/index/foreign key if it doesn't already exist.
+ * Safe to call on every cold start against a brand-new, empty database (e.g.
+ * a freshly provisioned Neon/Supabase project) so there is no separate
+ * migration step to run by hand before first use.
+ */
+let schemaReady: Promise<void> | null = null;
+export function ensureSchema() {
+  if (!schemaReady) {
+    schemaReady = db.execute(sql.raw(SCHEMA_INIT_SQL)).then(() => undefined);
+  }
+  return schemaReady;
+}
 
 export async function seedCanon() {
   const existing = await db.select({ id: books.id }).from(books).limit(1);
@@ -116,8 +131,9 @@ export async function seedAll() {
   return { books: canon.inserted, themes: th.inserted, sources: src.inserted, passages: ps.inserted };
 }
 
-/** Called by pages on first load so the canon is always available. */
+/** Called by pages on first load so the schema exists and the canon is always available. */
 export async function ensureSeeded() {
+  await ensureSchema();
   const existing = await db.select({ id: books.id }).from(books).limit(1);
   if (existing.length === 0) {
     await seedAll();

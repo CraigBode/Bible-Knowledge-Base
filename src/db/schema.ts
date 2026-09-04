@@ -11,6 +11,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
+// If you change this file, regenerate src/db/schema-init.ts to match:
+// run `npx drizzle-kit generate`, then hand-adapt the new drizzle/*.sql
+// output into that file's idempotent (CREATE ... IF NOT EXISTS / DO-block)
+// form, the same way the existing statements are written.
+
 // ---------- Enums ----------
 export const testamentEnum = pgEnum("testament", ["OT", "NT"]);
 export const languageEnum = pgEnum("original_language", [

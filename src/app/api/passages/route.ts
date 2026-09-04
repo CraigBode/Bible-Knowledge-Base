@@ -1,12 +1,14 @@
 import { db } from "@/db";
 import { passages } from "@/db/schema";
 import { desc } from "drizzle-orm";
+import { ensureSeeded } from "@/db/seed";
 import { formatReference } from "@/lib/exegesis";
 
 export const dynamic = "force-dynamic";
 
 /** Read-only JSON export of the knowledge base's passage studies. */
 export async function GET() {
+  await ensureSeeded();
   const rows = await db.query.passages.findMany({
     orderBy: [desc(passages.updatedAt)],
     with: {

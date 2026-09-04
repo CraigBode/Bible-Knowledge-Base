@@ -21,28 +21,29 @@ cross-references, biblical-theological themes, and a working bibliography attach
    npm install
    ```
 
-2. Have a PostgreSQL database available and set `DATABASE_URL`. Copy `.env.example` to `.env`
-   and adjust as needed:
+2. Have a PostgreSQL database available. Copy `.env.example` to `.env` and set `DATABASE_URL`
+   and `APP_PASSWORD`:
 
    ```bash
    cp .env.example .env
    ```
 
-3. Push the schema to the database:
-
-   ```bash
-   npm run db:push
-   ```
-
-4. Start the dev server:
+3. Start the dev server:
 
    ```bash
    npm run dev
    ```
 
-The canon (all 66 books), starter themes, a sample bibliography, and four fully worked sample
-studies are seeded automatically the first time any page loads against an empty database. You
-can also trigger or reset seeding from the **Knowledge Base Setup** page in the app.
+The database schema (tables, enums, indexes) and the canon (all 66 books), starter themes, a
+sample bibliography, and four fully worked sample studies are all created automatically the
+first time any page loads against an empty database — there is no separate migration command
+to run. You can also trigger or reset seeding from the **Knowledge Base Setup** page in the app.
+`npm run db:push` is available if you'd rather push schema changes ahead of time during
+development; see the comment atop `src/db/schema.ts` if you change the schema, since
+`src/db/schema-init.ts` (the auto-bootstrap SQL) needs to be regenerated to match.
+
+Every page requires the password set in `APP_PASSWORD` — there is no separate login per
+person, just one shared password gate (see `src/proxy.ts` and `src/app/login`).
 
 ## Scripts
 
@@ -55,6 +56,29 @@ can also trigger or reset seeding from the **Knowledge Base Setup** page in the 
 | `npm run typecheck`   | Type-check with `tsc --noEmit`              |
 | `npm run db:push`     | Push the Drizzle schema to the database     |
 | `npm run db:studio`   | Open Drizzle Studio against the database    |
+
+## Deploying (Vercel + Neon, free tier)
+
+This turns the app into a normal web address you open in a browser — nothing to install on
+any computer. One-time setup:
+
+1. **Database.** Go to [neon.tech](https://neon.tech), sign up free, and create a project. On
+   the project dashboard, copy the **connection string** it shows you (starts with
+   `postgresql://...`).
+2. **Hosting.** Go to [vercel.com](https://vercel.com) and sign up free using your GitHub
+   account.
+3. Click **Add New → Project**, and import the `Bible-Knowledge-Base` repository from GitHub.
+4. Before clicking Deploy, open **Environment Variables** and add two:
+   - `DATABASE_URL` — paste the Neon connection string from step 1.
+   - `APP_PASSWORD` — a password of your choosing. This is what guards the whole app.
+5. Click **Deploy**. After a minute or two, Vercel gives you a URL like
+   `bible-knowledge-base.vercel.app`.
+6. Open that URL, enter your password, and the app will set up its own database tables and
+   sample studies on that first visit. Bookmark the URL.
+
+To change the password later, or move to a different database, edit the environment variables
+in the Vercel project's **Settings** and redeploy (Vercel does this automatically when you save
+changed environment variables, or via the **Redeploy** button on the latest deployment).
 
 ## API
 

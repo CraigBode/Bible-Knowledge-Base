@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/lib/auth";
 
 const links = [
   { href: "/", label: "Dashboard", icon: "◈" },
@@ -40,6 +41,15 @@ export function Nav() {
           </Link>
         );
       })}
+      <form action={logout}>
+        <button
+          type="submit"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-700 transition-colors hover:bg-parchment-200 hover:text-oxblood-700"
+        >
+          <span className="w-5 text-center font-serif text-base text-gold-500">⏻</span>
+          Log out
+        </button>
+      </form>
     </nav>
   );
 }

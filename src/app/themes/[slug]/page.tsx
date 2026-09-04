@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { themes, passageThemes, passages, books, notes } from "@/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
+import { ensureSeeded } from "@/db/seed";
 import { formatReference } from "@/lib/exegesis";
 import { PageHeader, StatusBadge, EmptyState } from "@/components/ui";
 
@@ -14,6 +15,7 @@ export default async function ThemeDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  await ensureSeeded();
   const theme = await db.query.themes.findFirst({ where: eq(themes.slug, slug) });
   if (!theme) notFound();
 
