@@ -1,9 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/greek/manifest.webmanifest">
+<meta name="theme-color" content="#2B4B8C">
+<link rel="icon" type="image/png" sizes="192x192" href="/greek/icon-192.png">
+<link rel="apple-touch-icon" href="/greek/apple-touch-icon.png">
 <title>Koine Greek Workbook</title>
 <meta name="description" content="Paradigms, parsing drills, vocabulary, and parsed New Testament verses for studying Koine Greek.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap">
 <style>
+[hidden] { display: none !important; }
 /* Layout: a manuscript-style masthead over a sticky tab bar; each tab is one working surface (reference sheet, drill card, flashcard, verse reader). */
 :root {
   --bg: #F3F5F8;
@@ -182,6 +192,8 @@ details.list summary { cursor: pointer; font-weight: 700; }
   @keyframes rise { from { transform: translateY(4px); opacity: .6; } to { transform: none; opacity: 1; } }
 }
 </style>
+</head>
+<body>
 
 <header class="masthead">
   <div class="wrap">
@@ -1932,3 +1944,10 @@ openVerse(vIdx);
 const hash = location.hash.replace("#", "");
 show(VIEWS.includes(hash) ? hash : LS.get("view", "paradigms"));
 </script>
+<script>
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  navigator.serviceWorker.register("/greek/sw.js", { scope: "/greek/" }).catch(() => {});
+}
+</script>
+</body>
+</html>
