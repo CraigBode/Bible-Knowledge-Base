@@ -1,0 +1,1953 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/greek/manifest.webmanifest">
+<meta name="theme-color" content="#2B4B8C">
+<link rel="icon" type="image/png" sizes="192x192" href="/greek/icon-192.png">
+<link rel="apple-touch-icon" href="/greek/apple-touch-icon.png">
+<title>Koine Greek Workbook</title>
+<meta name="description" content="Paradigms, parsing drills, vocabulary, and parsed New Testament verses for studying Koine Greek.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+[hidden] { display: none !important; }
+/* Layout: a manuscript-style masthead over a sticky tab bar; each tab is one working surface (reference sheet, drill card, flashcard, verse reader). */
+:root {
+  --bg: #F3F5F8;
+  --surface: #FFFFFF;
+  --surface-2: #EAEEF4;
+  --ink: #1A2233;
+  --muted: #586379;
+  --rule: #D5DCE6;
+  --lapis: #2B4B8C;
+  --lapis-soft: #E2E9F6;
+  --ochre: #9A6A0E;
+  --ochre-soft: #F6EBD3;
+  --good: #23704A;
+  --good-soft: #DDF0E5;
+  --bad: #AE2A20;
+  --bad-soft: #F7E0DD;
+  --font-greek: "Gentium Book Plus", "Gentium Plus", "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
+  --font-ui: "Alegreya Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10141C; --surface: #182031; --surface-2: #1F293D; --ink: #E5E9F1; --muted: #9AA5BA; --rule: #2C3750;
+    --lapis: #93B2F2; --lapis-soft: #223050; --ochre: #E3B65E; --ochre-soft: #3A2F18;
+    --good: #72C997; --good-soft: #173A29; --bad: #F2908A; --bad-soft: #43201E; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10141C; --surface: #182031; --surface-2: #1F293D; --ink: #E5E9F1; --muted: #9AA5BA; --rule: #2C3750;
+  --lapis: #93B2F2; --lapis-soft: #223050; --ochre: #E3B65E; --ochre-soft: #3A2F18;
+  --good: #72C997; --good-soft: #173A29; --bad: #F2908A; --bad-soft: #43201E; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 17px; line-height: 1.5; margin: 0; }
+.gk, [lang="grc"] { font-family: var(--font-greek); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; }
+h1, h2, h3 { font-family: var(--font-greek); text-wrap: balance; line-height: 1.2; margin: 0; }
+button { font: inherit; color: inherit; }
+button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--ochre); outline-offset: 2px; }
+
+/* Masthead */
+.masthead { padding-block: 28px 18px; border-bottom: 1px solid var(--rule); background: var(--surface); }
+.masthead .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
+.masthead h1 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 700; color: var(--ink); }
+.masthead h1 .kappa { color: var(--lapis); }
+.masthead .sub { color: var(--muted); margin: 0; }
+.masthead .sub .gk { color: var(--ochre); font-style: italic; }
+
+/* Tabs */
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--rule); }
+.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 12px 14px 9px; cursor: pointer; color: var(--muted); font-weight: 500; white-space: nowrap; font-size: 1rem; }
+.tab[aria-selected="true"] { color: var(--lapis); border-bottom-color: var(--lapis); }
+.tab:hover { color: var(--ink); }
+
+main { padding-block: 24px 64px; }
+.lead { color: var(--muted); max-width: 68ch; margin: 0 0 18px; }
+
+/* Shared controls */
+.btn { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--lapis); }
+.btn.primary { background: var(--lapis); border-color: var(--lapis); color: var(--surface); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .5; cursor: default; }
+.chip { background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: .95rem; }
+.chip[aria-pressed="true"] { background: var(--lapis-soft); border-color: var(--lapis); color: var(--lapis); font-weight: 500; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.label { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+select, input[type="search"] { font: inherit; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; max-width: 100%; }
+
+/* Paradigms */
+.pgrid { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.sidebar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); display: flex; flex-direction: column; gap: 14px; }
+.sidebar .grp { display: flex; flex-direction: column; gap: 2px; }
+.sidebar .grp .label { margin-bottom: 4px; }
+.sheet-link { text-align: left; background: none; border: 0; border-left: 2px solid var(--rule); padding: 4px 10px; cursor: pointer; color: var(--ink); }
+.sheet-link:hover { border-left-color: var(--muted); }
+.sheet-link[aria-current="true"] { border-left-color: var(--lapis); color: var(--lapis); font-weight: 700; }
+.sheet-select { display: none; width: 100%; margin-bottom: 16px; }
+.sheet-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.sheet-head h2 { font-size: 1.7rem; }
+.sheet-head p { margin: 0; max-width: 70ch; }
+.tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+.ptab { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ptab.wide { grid-column: 1 / -1; }
+.ptab h3 { font-family: var(--font-ui); font-size: 1rem; font-weight: 700; }
+.ptab h3 .gk { font-family: var(--font-greek); font-weight: 400; color: var(--lapis); font-size: 1.1rem; }
+.ptab .gl { color: var(--muted); font-weight: 400; font-style: italic; }
+.ptab .note { color: var(--muted); font-size: .93rem; margin: 0; }
+.scroll { overflow-x: auto; }
+.pair { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+table.par { border-collapse: collapse; }
+table.par th { font-weight: 500; font-size: .8rem; color: var(--muted); text-align: left; padding: 4px 14px 4px 0; letter-spacing: .04em; white-space: nowrap; }
+table.par thead th { text-transform: uppercase; border-bottom: 1px solid var(--rule); }
+table.par td { font-family: var(--font-greek); font-size: 1.18rem; padding: 3px 18px 3px 0; white-space: nowrap; }
+table.par tbody tr + tr td, table.par tbody tr + tr th { border-top: 1px dotted var(--rule); }
+.caption { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ochre); font-weight: 700; margin-bottom: 2px; }
+
+/* Drill */
+.drill { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.bigform { font-family: var(--font-greek); font-size: clamp(2.3rem, 7vw, 3.4rem); line-height: 1.1; text-align: center; padding-block: 12px 4px; overflow-wrap: anywhere; }
+.subform { text-align: center; color: var(--muted); margin-top: -8px; }
+.field { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: start; }
+.field .label { padding-top: 7px; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opt { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 11px; cursor: pointer; font-size: .97rem; }
+.opt.gk { font-size: 1.1rem; padding-block: 3px; }
+.opt[aria-pressed="true"] { background: var(--lapis-soft); border-color: var(--lapis); color: var(--lapis); font-weight: 500; }
+.opt.right { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+.opt.wrong { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); text-decoration: line-through; }
+.feedback { border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.feedback.ok { background: var(--good-soft); }
+.feedback.no { background: var(--bad-soft); }
+.feedback .verdict { font-weight: 700; }
+.feedback.ok .verdict { color: var(--good); }
+.feedback.no .verdict { color: var(--bad); }
+.feedback ul { margin: 0; padding-left: 20px; }
+.feedback p { margin: 0; }
+.stats { display: flex; gap: 18px; color: var(--muted); font-size: .95rem; font-variant-numeric: tabular-nums; }
+.stats b { color: var(--ink); }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.panel h3 { font-family: var(--font-ui); font-size: 1rem; }
+.checks { display: flex; flex-direction: column; gap: 10px; }
+.checks .grp { display: flex; flex-direction: column; gap: 3px; }
+.checks label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: .95rem; }
+.checks input { margin-top: 4px; accent-color: var(--lapis); }
+.hint { color: var(--muted); font-size: .88rem; margin: 0; }
+
+/* Vocabulary */
+.vocab { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.flash { min-height: 260px; justify-content: space-between; }
+.flash .front { font-family: var(--font-greek); font-size: clamp(2rem, 6vw, 2.8rem); text-align: center; overflow-wrap: anywhere; }
+.flash .front.en { font-family: var(--font-ui); font-size: clamp(1.5rem, 4.5vw, 2rem); }
+.flash .back { text-align: center; font-size: 1.25rem; min-height: 2.2em; }
+.flash .back .gk { font-size: 1.5rem; }
+.flash .meta { text-align: center; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.boxes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center; font-variant-numeric: tabular-nums; }
+.boxes div { background: var(--surface-2); border-radius: 6px; padding: 6px 2px; font-size: .8rem; color: var(--muted); }
+.boxes b { display: block; font-size: 1.1rem; color: var(--ink); }
+details.list { margin-top: 24px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 16px; }
+details.list summary { cursor: pointer; font-weight: 700; }
+.wordtable { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.wordtable th { text-align: left; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--rule); padding: 6px 8px 6px 0; }
+.wordtable td { padding: 5px 8px 5px 0; border-bottom: 1px dotted var(--rule); vertical-align: top; }
+.wordtable td.gk { font-size: 1.12rem; }
+.wordtable td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* Verses */
+.verses { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+.vref { font-family: var(--font-ui); font-weight: 700; color: var(--ochre); letter-spacing: .04em; }
+.vtext { font-family: var(--font-greek); font-size: clamp(1.45rem, 4vw, 1.85rem); line-height: 1.9; }
+.tok { cursor: pointer; border-radius: 4px; padding: 1px 2px; border-bottom: 1px dotted transparent; }
+.tok:hover { background: var(--lapis-soft); }
+.tok.sel { background: var(--lapis-soft); color: var(--lapis); border-bottom-color: var(--lapis); }
+.tok.target { background: var(--ochre-soft); color: var(--ochre); border-bottom: 2px solid var(--ochre); }
+.vnote { color: var(--muted); font-size: .93rem; margin: 0; }
+.info .form { font-family: var(--font-greek); font-size: 2rem; }
+.info dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
+.info dt { color: var(--muted); font-size: .85rem; padding-top: 2px; }
+.info dd { margin: 0; }
+.info code { font-size: .85rem; color: var(--muted); }
+.qopts { display: flex; flex-direction: column; gap: 6px; }
+.qopts .opt { text-align: left; }
+
+@media (max-width: 860px) {
+  .pgrid, .drill, .vocab, .verses { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { display: none; }
+  .sheet-select { display: block; }
+  .field { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .field .label { padding-top: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .feedback { animation: rise .18s ease-out; }
+  @keyframes rise { from { transform: translateY(4px); opacity: .6; } to { transform: none; opacity: 1; } }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <h1><span class="kappa">Koine</span> Greek Workbook</h1>
+    <p class="sub"><span class="gk" lang="grc">ἡ κοινὴ διάλεκτος</span> · paradigms, parsing, vocabulary, and the text of the New Testament</p>
+  </div>
+</header>
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="tab-paradigms" data-view="paradigms">Paradigms</button>
+    <button class="tab" role="tab" id="tab-drill" data-view="drill">Parsing Drill</button>
+    <button class="tab" role="tab" id="tab-vocab" data-view="vocab">Vocabulary</button>
+    <button class="tab" role="tab" id="tab-verses" data-view="verses">Verses</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section id="view-paradigms" hidden>
+    <div class="pgrid">
+      <nav class="sidebar" id="sidebar" aria-label="Paradigm sheets"></nav>
+      <div style="min-width:0">
+        <select class="sheet-select" id="sheet-select" aria-label="Choose a paradigm sheet"></select>
+        <div id="sheet"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-drill" hidden>
+    <p class="lead">Parse the form. Choose each part, then check. Forms that can be parsed more than one way accept any correct parsing. Pick which paradigms to drill in the panel.</p>
+    <div class="drill">
+      <div class="card" id="drill-card"></div>
+      <aside class="panel">
+        <div class="stats" id="drill-stats"></div>
+        <h3>Drill these paradigms</h3>
+        <div class="row">
+          <button class="btn" id="drill-all" type="button">All</button>
+          <button class="btn" id="drill-none" type="button">None</button>
+        </div>
+        <div class="checks" id="drill-checks"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="view-vocab" hidden>
+    <p class="lead">Words occurring 50 times or more in the New Testament, with approximate frequency counts. Words you miss come back more often; words you know move up and appear less.</p>
+    <div class="vocab">
+      <div class="card flash" id="flash"></div>
+      <aside class="panel">
+        <h3>Frequency</h3>
+        <div class="row" id="bands"></div>
+        <h3>Direction</h3>
+        <div class="row" id="direction"></div>
+        <h3>Your progress</h3>
+        <div class="boxes" id="boxes"></div>
+        <p class="hint">Box 1 holds new and missed words; box 5 holds words you have known several times in a row. Progress is saved in this browser only.</p>
+        <button class="btn" id="vocab-reset" type="button">Reset progress</button>
+        <p class="hint" id="reset-confirm" hidden>Tap again to clear all vocabulary progress.</p>
+      </aside>
+    </div>
+    <details class="list">
+      <summary>Full word list</summary>
+      <div class="row" style="margin-top:12px">
+        <input type="search" id="vocab-search" placeholder="Search Greek or English" aria-label="Search the word list">
+        <span class="hint" id="vocab-count"></span>
+      </div>
+      <div class="scroll"><table class="wordtable" id="wordtable"></table></div>
+    </details>
+  </section>
+
+  <section id="view-verses" hidden>
+    <p class="lead">Tap any word to see its lexical form, gloss, and parsing. Switch to Quiz to parse words yourself. Text follows NA28 / SBLGNT.</p>
+    <div class="verses">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="row">
+            <button class="btn" id="v-prev" type="button" aria-label="Previous verse">←</button>
+            <select id="v-select" aria-label="Choose a verse"></select>
+            <button class="btn" id="v-next" type="button" aria-label="Next verse">→</button>
+          </div>
+          <div class="row" id="v-mode"></div>
+        </div>
+        <div class="vref" id="v-ref"></div>
+        <div class="vtext" id="v-text" lang="grc"></div>
+        <p class="vnote" id="v-note" hidden></p>
+      </div>
+      <aside class="panel info" id="v-info"></aside>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+/* ---------- storage ---------- */
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem("kgw:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("kgw:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k === "text") n.textContent = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) if (c != null) n.append(c);
+  return n;
+};
+const gk = (t, tag = "span") => el(tag, { class: "gk", lang: "grc", text: t });
+const N = s => s.trim().split(/\s+/);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const showForm = f => f.replace("(ν)", "ν");
+const stripMarks = s => s.normalize("NFD").replace(/[̀-ͯ͂-ͅ]/g, "").toLowerCase();
+
+/* 2-1-2 participle/adjective builder: A = stem as accented in the nom. sg. masc., P = stem when the ultima is long */
+function omenos(A, P) {
+  return [
+    { g: "masculine", sg: [A + "ος", P + "ου", P + "ῳ", A + "ον"], pl: [A + "οι", P + "ων", P + "οις", P + "ους"] },
+    { g: "feminine", sg: [P + "η", P + "ης", P + "ῃ", P + "ην"], pl: [A + "αι", P + "ων", P + "αις", P + "ας"] },
+    { g: "neuter", sg: [A + "ον", P + "ου", P + "ῳ", A + "ον"], pl: [A + "α", P + "ων", P + "οις", A + "α"] }
+  ];
+}
+
+/* ---------- paradigm data ---------- */
+const SHEETS = [
+  { id: "article", group: "Article & nouns", title: "The article",
+    intro: "The article agrees with its noun in case, number, and gender. Learn it first: its endings are nearly the same as first and second declension noun endings, so it unlocks the whole noun system.",
+    tables: [
+      { type: "adj", title: "ὁ, ἡ, τό", lemma: "ὁ", gloss: "the", cols: [
+        { g: "masculine", sg: N("ὁ τοῦ τῷ τόν"), pl: N("οἱ τῶν τοῖς τούς") },
+        { g: "feminine", sg: N("ἡ τῆς τῇ τήν"), pl: N("αἱ τῶν ταῖς τάς") },
+        { g: "neuter", sg: N("τό τοῦ τῷ τό"), pl: N("τά τῶν τοῖς τά") }],
+        note: "Masculine and feminine nominatives (ὁ, ἡ, οἱ, αἱ) have rough breathing and no τ; every other form begins with τ. The genitive plural τῶν is the same in all genders." }
+    ] },
+  { id: "n2", group: "Article & nouns", title: "Second declension",
+    intro: "Second declension nouns are mostly masculine in -ος or neuter in -ον. The stem ends in ο, which shows up in nearly every ending.",
+    tables: [
+      { type: "noun", title: "λόγος", lemma: "λόγος", gloss: "word", g: "masculine",
+        sg: N("λόγος λόγου λόγῳ λόγον λόγε"), pl: N("λόγοι λόγων λόγοις λόγους λόγοι"),
+        note: "Masculine endings: -ος, -ου, -ῳ, -ον; -οι, -ων, -οις, -ους. A few -ος nouns are feminine, notably ἡ ὁδός." },
+      { type: "noun", title: "ἔργον", lemma: "ἔργον", gloss: "work", g: "neuter",
+        sg: N("ἔργον ἔργου ἔργῳ ἔργον ἔργον"), pl: N("ἔργα ἔργων ἔργοις ἔργα ἔργα"),
+        note: "Neuter rule: nominative and accusative are always identical, and the plural nominative/accusative ends in -α. A neuter plural subject often takes a singular verb." }
+    ] },
+  { id: "n1", group: "Article & nouns", title: "First declension",
+    intro: "First declension nouns are mostly feminine, with stems in α or η. The singular varies by type; the plural is the same for every type: -αι, -ων, -αις, -ας.",
+    tables: [
+      { type: "noun", title: "γραφή", lemma: "γραφή", gloss: "writing, Scripture", g: "feminine",
+        sg: N("γραφή γραφῆς γραφῇ γραφήν γραφή"), pl: N("γραφαί γραφῶν γραφαῖς γραφάς γραφαί"),
+        note: "η-type: η throughout the singular. The genitive plural of every first declension noun is accented -ῶν." },
+      { type: "noun", title: "ὥρα", lemma: "ὥρα", gloss: "hour", g: "feminine",
+        sg: N("ὥρα ὥρας ὥρᾳ ὥραν ὥρα"), pl: N("ὧραι ὡρῶν ὥραις ὥρας ὧραι"),
+        note: "After ε, ι, or ρ the α stays through the singular. Note ὥρας can be genitive singular or accusative plural." },
+      { type: "noun", title: "δόξα", lemma: "δόξα", gloss: "glory", g: "feminine",
+        sg: N("δόξα δόξης δόξῃ δόξαν δόξα"), pl: N("δόξαι δοξῶν δόξαις δόξας δόξαι"),
+        note: "Short α in the nominative and accusative singular, η in the genitive and dative singular (after σ, ξ, ζ, λλ)." },
+      { type: "noun", title: "προφήτης", lemma: "προφήτης", gloss: "prophet", g: "masculine",
+        sg: N("προφήτης προφήτου προφήτῃ προφήτην προφῆτα"), pl: N("προφῆται προφητῶν προφήταις προφήτας προφῆται"),
+        note: "Masculine first declension: nominative -ης, genitive -ου (borrowed from the second declension). So also μαθητής." }
+    ] },
+  { id: "n3", group: "Article & nouns", title: "Third declension",
+    intro: "Third declension stems end in a consonant, or in ι, υ, ευ. Find the stem from the genitive singular by dropping -ος. Core endings: -ς or none, -ος, -ι, -α or -ν; -ες, -ων, -σι(ν), -ας. When σ meets the stem: labial + σ = ψ, velar + σ = ξ, and a dental (τ, δ, θ) or ντ drops out.",
+    tables: [
+      { type: "noun", title: "σάρξ", lemma: "σάρξ", gloss: "flesh", g: "feminine",
+        sg: N("σάρξ σαρκός σαρκί σάρκα σάρξ"), pl: N("σάρκες σαρκῶν σαρξί(ν) σάρκας σάρκες"),
+        note: "Stem σαρκ-. κ + σ = ξ in the nominative singular and dative plural." },
+      { type: "noun", title: "χάρις", lemma: "χάρις", gloss: "grace", g: "feminine",
+        sg: N("χάρις χάριτος χάριτι χάριν χάρι"), pl: N("χάριτες χαρίτων χάρισι(ν) χάριτας χάριτες"),
+        note: "Stem χαριτ-. The dental τ drops before σ. The accusative singular is χάριν (also χάριτα)." },
+      { type: "noun", title: "πνεῦμα", lemma: "πνεῦμα", gloss: "spirit, Spirit", g: "neuter",
+        sg: N("πνεῦμα πνεύματος πνεύματι πνεῦμα πνεῦμα"), pl: N("πνεύματα πνευμάτων πνεύμασι(ν) πνεύματα πνεύματα"),
+        note: "Neuter stems in -ματ- are very common: σῶμα, ὄνομα, ῥῆμα, θέλημα, αἷμα, στόμα." },
+      { type: "noun", title: "ἄρχων", lemma: "ἄρχων", gloss: "ruler", g: "masculine",
+        sg: N("ἄρχων ἄρχοντος ἄρχοντι ἄρχοντα ἄρχων"), pl: N("ἄρχοντες ἀρχόντων ἄρχουσι(ν) ἄρχοντας ἄρχοντες"),
+        note: "Stem ἀρχοντ-. Before σ the ντ drops and ο lengthens to ου: ἄρχουσι(ν). The same pattern runs through active participles." },
+      { type: "noun", title: "πατήρ", lemma: "πατήρ", gloss: "father", g: "masculine",
+        sg: N("πατήρ πατρός πατρί πατέρα πάτερ"), pl: N("πατέρες πατέρων πατράσι(ν) πατέρας πατέρες"),
+        note: "Syncopated stem: πατερ- loses its ε in some forms (πατρός). So also μήτηρ, θυγάτηρ, and ἀνήρ (ἀνδρός)." },
+      { type: "noun", title: "πόλις", lemma: "πόλις", gloss: "city", g: "feminine",
+        sg: N("πόλις πόλεως πόλει πόλιν πόλι"), pl: N("πόλεις πόλεων πόλεσι(ν) πόλεις πόλεις"),
+        note: "Stems in ι/ε. Genitive -εως. So also πίστις, δύναμις, ἀνάστασις, κρίσις." },
+      { type: "noun", title: "γένος", lemma: "γένος", gloss: "race, kind", g: "neuter",
+        sg: N("γένος γένους γένει γένος γένος"), pl: N("γένη γενῶν γένεσι(ν) γένη γένη"),
+        note: "Stem γενεσ-. The σ drops between vowels and the vowels contract (γένεσος → γένεος → γένους). So also ἔθνος, ὄρος, τέλος." },
+      { type: "noun", title: "βασιλεύς", lemma: "βασιλεύς", gloss: "king", g: "masculine",
+        sg: N("βασιλεύς βασιλέως βασιλεῖ βασιλέα βασιλεῦ"), pl: N("βασιλεῖς βασιλέων βασιλεῦσι(ν) βασιλεῖς βασιλεῖς"),
+        note: "Stems in ευ. Genitive -εως. So also ἀρχιερεύς and γραμματεύς." }
+    ] },
+  { id: "adj", group: "Adjectives & pronouns", title: "Adjectives",
+    intro: "Adjectives follow the noun patterns. 2-1-2: masculine and neuter second declension, feminine first. 3-1-3: masculine and neuter third declension, feminine first. 3-3: one form for masculine and feminine, another for neuter.",
+    tables: [
+      { type: "adj", title: "ἀγαθός, -ή, -όν", lemma: "ἀγαθός", gloss: "good", cols: [
+        { g: "masculine", sg: N("ἀγαθός ἀγαθοῦ ἀγαθῷ ἀγαθόν"), pl: N("ἀγαθοί ἀγαθῶν ἀγαθοῖς ἀγαθούς") },
+        { g: "feminine", sg: N("ἀγαθή ἀγαθῆς ἀγαθῇ ἀγαθήν"), pl: N("ἀγαθαί ἀγαθῶν ἀγαθαῖς ἀγαθάς") },
+        { g: "neuter", sg: N("ἀγαθόν ἀγαθοῦ ἀγαθῷ ἀγαθόν"), pl: N("ἀγαθά ἀγαθῶν ἀγαθοῖς ἀγαθά") }],
+        note: "2-1-2 pattern. After ε, ι, ρ the feminine keeps α: ἅγιος, ἁγία, ἅγιον." },
+      { type: "adj", title: "πᾶς, πᾶσα, πᾶν", lemma: "πᾶς", gloss: "all, every", cols: [
+        { g: "masculine", sg: N("πᾶς παντός παντί πάντα"), pl: N("πάντες πάντων πᾶσι(ν) πάντας") },
+        { g: "feminine", sg: N("πᾶσα πάσης πάσῃ πᾶσαν"), pl: N("πᾶσαι πασῶν πάσαις πάσας") },
+        { g: "neuter", sg: N("πᾶν παντός παντί πᾶν"), pl: N("πάντα πάντων πᾶσι(ν) πάντα") }],
+        note: "3-1-3 pattern, stem παντ-. πάντα can be masculine accusative singular or neuter nominative/accusative plural." },
+      { type: "adj", title: "πολύς, πολλή, πολύ", lemma: "πολύς", gloss: "much, many", cols: [
+        { g: "masculine", sg: N("πολύς πολλοῦ πολλῷ πολύν"), pl: N("πολλοί πολλῶν πολλοῖς πολλούς") },
+        { g: "feminine", sg: N("πολλή πολλῆς πολλῇ πολλήν"), pl: N("πολλαί πολλῶν πολλαῖς πολλάς") },
+        { g: "neuter", sg: N("πολύ πολλοῦ πολλῷ πολύ"), pl: N("πολλά πολλῶν πολλοῖς πολλά") }],
+        note: "Two stems: πολυ- in four masculine/neuter singular forms, πολλ- (2-1-2) everywhere else. μέγας works the same way (μεγάλ-)." },
+      { type: "adj", title: "ἀληθής, -ές", lemma: "ἀληθής", gloss: "true", cols: [
+        { g: "mf", sg: N("ἀληθής ἀληθοῦς ἀληθεῖ ἀληθῆ"), pl: N("ἀληθεῖς ἀληθῶν ἀληθέσι(ν) ἀληθεῖς") },
+        { g: "neuter", sg: N("ἀληθές ἀληθοῦς ἀληθεῖ ἀληθές"), pl: N("ἀληθῆ ἀληθῶν ἀληθέσι(ν) ἀληθῆ") }],
+        note: "3-3 pattern, stem ἀληθεσ-; the σ drops and the vowels contract, as in γένος. Masculine and feminine share one set of forms." },
+      { type: "adj", title: "εἷς, μία, ἕν", lemma: "εἷς", gloss: "one", cols: [
+        { g: "masculine", sg: N("εἷς ἑνός ἑνί ἕνα") },
+        { g: "feminine", sg: N("μία μιᾶς μιᾷ μίαν") },
+        { g: "neuter", sg: N("ἕν ἑνός ἑνί ἕν") }],
+        note: "Singular only. Watch breathing and accent: ἕν (one) and ἐν (in); εἷς (one) and εἰς (into). οὐδείς and μηδείς decline the same way." }
+    ] },
+  { id: "pron1", group: "Adjectives & pronouns", title: "Personal pronouns",
+    intro: "First and second person pronouns have no gender. αὐτός serves as the third person pronoun and declines like ἀγαθός, except for the neuter singular αὐτό.",
+    tables: [
+      { type: "adj", title: "ἐγώ", lemma: "ἐγώ", gloss: "I; we", cols: [
+        { g: null, sg: ["ἐγώ", "ἐμοῦ/μου", "ἐμοί/μοι", "ἐμέ/με"], pl: N("ἡμεῖς ἡμῶν ἡμῖν ἡμᾶς") }],
+        note: "The unaccented forms μου, μοι, με are enclitic. The accented forms add emphasis or follow a preposition. A nominative pronoun is itself emphatic, since the verb already shows the person." },
+      { type: "adj", title: "σύ", lemma: "σύ", gloss: "you; you (plural)", cols: [
+        { g: null, sg: ["σύ", "σοῦ/σου", "σοί/σοι", "σέ/σε"], pl: N("ὑμεῖς ὑμῶν ὑμῖν ὑμᾶς") }],
+        note: "Plural ἡμ- means we/us; ὑμ- means you. Rough breathing on both: watch the first letter." },
+      { type: "adj", title: "αὐτός, -ή, -ό", lemma: "αὐτός", gloss: "he, she, it; self; same", cols: [
+        { g: "masculine", sg: N("αὐτός αὐτοῦ αὐτῷ αὐτόν"), pl: N("αὐτοί αὐτῶν αὐτοῖς αὐτούς") },
+        { g: "feminine", sg: N("αὐτή αὐτῆς αὐτῇ αὐτήν"), pl: N("αὐταί αὐτῶν αὐταῖς αὐτάς") },
+        { g: "neuter", sg: N("αὐτό αὐτοῦ αὐτῷ αὐτό"), pl: N("αὐτά αὐτῶν αὐτοῖς αὐτά") }],
+        note: "Three uses: personal (he, she, it), intensive in predicate position (he himself, αὐτὸς ὁ θεός), and identifying in attributive position (the same, ὁ αὐτός, Heb 13:8)." }
+    ] },
+  { id: "pron2", group: "Adjectives & pronouns", title: "Other pronouns",
+    intro: "Demonstrative, relative, and interrogative pronouns. Each agrees in gender and number with the word it refers to; its case comes from its own clause.",
+    tables: [
+      { type: "adj", title: "οὗτος, αὕτη, τοῦτο", lemma: "οὗτος", gloss: "this; these", cols: [
+        { g: "masculine", sg: N("οὗτος τούτου τούτῳ τοῦτον"), pl: N("οὗτοι τούτων τούτοις τούτους") },
+        { g: "feminine", sg: N("αὕτη ταύτης ταύτῃ ταύτην"), pl: N("αὗται τούτων ταύταις ταύτας") },
+        { g: "neuter", sg: N("τοῦτο τούτου τούτῳ τοῦτο"), pl: N("ταῦτα τούτων τούτοις ταῦτα") }],
+        note: "Like the article, it begins with a rough breathing in the masculine and feminine nominatives and with τ elsewhere. The stem vowel follows the ending: ο/ου with ο or ω, α/αυ with α or η." },
+      { type: "adj", title: "ἐκεῖνος, -η, -ο", lemma: "ἐκεῖνος", gloss: "that; those", cols: [
+        { g: "masculine", sg: N("ἐκεῖνος ἐκείνου ἐκείνῳ ἐκεῖνον"), pl: N("ἐκεῖνοι ἐκείνων ἐκείνοις ἐκείνους") },
+        { g: "feminine", sg: N("ἐκείνη ἐκείνης ἐκείνῃ ἐκείνην"), pl: N("ἐκεῖναι ἐκείνων ἐκείναις ἐκείνας") },
+        { g: "neuter", sg: N("ἐκεῖνο ἐκείνου ἐκείνῳ ἐκεῖνο"), pl: N("ἐκεῖνα ἐκείνων ἐκείνοις ἐκεῖνα") }],
+        note: "Regular 2-1-2, with neuter singular -ο like αὐτό." },
+      { type: "adj", title: "ὅς, ἥ, ὅ", lemma: "ὅς", gloss: "who, which", cols: [
+        { g: "masculine", sg: N("ὅς οὗ ᾧ ὅν"), pl: N("οἵ ὧν οἷς οὕς") },
+        { g: "feminine", sg: N("ἥ ἧς ᾗ ἥν"), pl: N("αἵ ὧν αἷς ἅς") },
+        { g: "neuter", sg: N("ὅ οὗ ᾧ ὅ"), pl: N("ἅ ὧν οἷς ἅ") }],
+        note: "Every form is the bare case ending with a rough breathing and an accent. Compare ἡ (article) and ἥ (relative), οὐ (not) and οὗ (of whom)." },
+      { type: "adj", title: "τίς, τί", lemma: "τίς", gloss: "who? what? why?", cols: [
+        { g: "mf", sg: N("τίς τίνος τίνι τίνα"), pl: N("τίνες τίνων τίσι(ν) τίνας") },
+        { g: "neuter", sg: N("τί τίνος τίνι τί"), pl: N("τίνα τίνων τίσι(ν) τίνα") }],
+        note: "Interrogative τίς always has an acute on the first syllable, even before another word. The indefinite τις (someone, anything) has the same endings but is enclitic. Neuter τί often means why." }
+    ] },
+  { id: "eimi", group: "Verbs", title: "εἰμί",
+    intro: "The most common verb in the New Testament. It takes a predicate nominative, not an accusative object. All present indicative forms except εἶ are enclitic. Grammars do not assign εἰμί a voice in the present and imperfect; the future is middle in form.",
+    tables: [
+      { type: "verb", title: "Present indicative", lemma: "εἰμί", gloss: "I am", tense: "present", voice: null, mood: "indicative", forms: N("εἰμί εἶ ἐστί(ν) ἐσμέν ἐστέ εἰσί(ν)"), note: "Watch εἰσί(ν) (they are) and εἰς (into)." },
+      { type: "verb", title: "Imperfect indicative", lemma: "εἰμί", gloss: "I was", tense: "imperfect", voice: null, mood: "indicative", forms: N("ἤμην ἦς ἦν ἦμεν ἦτε ἦσαν"), note: "ἦν (he was) is the form of John 1:1." },
+      { type: "verb", title: "Future indicative", lemma: "εἰμί", gloss: "I will be", tense: "future", voice: "middle", mood: "indicative", forms: N("ἔσομαι ἔσῃ ἔσται ἐσόμεθα ἔσεσθε ἔσονται"), note: "Middle endings with active meaning. 3 sg. ἔσται has no connecting vowel." },
+      { type: "verb", title: "Present subjunctive", lemma: "εἰμί", gloss: "I may be", tense: "present", voice: null, mood: "subjunctive", forms: N("ὦ ᾖς ᾖ ὦμεν ἦτε ὦσι(ν)"), note: "Just the subjunctive endings. ἦτε is both imperfect indicative and present subjunctive." },
+      { type: "verb", title: "Present imperative", lemma: "εἰμί", gloss: "be!", tense: "present", voice: null, mood: "imperative", forms: N("ἴσθι ἔστω ἔστε ἔστωσαν"), note: "3 sg. also appears as ἤτω." },
+      { type: "inf", title: "Infinitive", lemma: "εἰμί", gloss: "to be", rows: [["present", null, "εἶναι"]], note: "Often with the article in a phrase: ἐν τῷ εἶναι, διὰ τὸ εἶναι." },
+      { type: "ptc", title: "Present participle", lemma: "εἰμί", gloss: "being", tense: "present", voice: null, cols: [
+        { g: "masculine", sg: N("ὤν ὄντος ὄντι ὄντα"), pl: N("ὄντες ὄντων οὖσι(ν) ὄντας") },
+        { g: "feminine", sg: N("οὖσα οὔσης οὔσῃ οὖσαν"), pl: N("οὖσαι οὐσῶν οὔσαις οὔσας") },
+        { g: "neuter", sg: N("ὄν ὄντος ὄντι ὄν"), pl: N("ὄντα ὄντων οὖσι(ν) ὄντα") }],
+        note: "These are the endings of every present active participle: λύ-ων, λύ-ουσα, λῦ-ον." }
+    ] },
+  { id: "v-pres", group: "Verbs", title: "Present & imperfect indicative",
+    intro: "λύω (I loose, untie, destroy) is the model ω-verb. The present uses primary endings; the imperfect adds an augment (ἐ-) and uses secondary endings.",
+    tables: [
+      { type: "verb", title: "Present active indicative", lemma: "λύω", gloss: "I loose", tense: "present", voice: "active", mood: "indicative", forms: N("λύω λύεις λύει λύομεν λύετε λύουσι(ν)"),
+        note: "Primary active endings: -ω, -εις, -ει, -ομεν, -ετε, -ουσι(ν). The connecting vowel is ο before μ and ν, ε elsewhere." },
+      { type: "verb", title: "Present middle/passive indicative", lemma: "λύω", gloss: "I loose (for myself), am loosed", tense: "present", voice: "mp", mood: "indicative", forms: N("λύομαι λύῃ λύεται λυόμεθα λύεσθε λύονται"),
+        note: "Primary middle/passive endings: -μαι, -σαι, -ται, -μεθα, -σθε, -νται. In 2 sg. ε + σαι loses σ and contracts to -ῃ. Middle and passive are identical in the present." },
+      { type: "verb", title: "Imperfect active indicative", lemma: "λύω", gloss: "I was loosing", tense: "imperfect", voice: "active", mood: "indicative", forms: N("ἔλυον ἔλυες ἔλυε(ν) ἐλύομεν ἐλύετε ἔλυον"),
+        note: "Augment + present stem + secondary active endings: -ον, -ες, -ε(ν), -ομεν, -ετε, -ον. 1 sg. and 3 pl. are identical; context decides." },
+      { type: "verb", title: "Imperfect middle/passive indicative", lemma: "λύω", gloss: "I was being loosed", tense: "imperfect", voice: "mp", mood: "indicative", forms: N("ἐλυόμην ἐλύου ἐλύετο ἐλυόμεθα ἐλύεσθε ἐλύοντο"),
+        note: "Secondary middle/passive endings: -μην, -σο, -το, -μεθα, -σθε, -ντο. In 2 sg. ε + σο loses σ and contracts to -ου." }
+    ] },
+  { id: "v-fut-aor", group: "Verbs", title: "Future & aorist indicative",
+    intro: "The future adds σ to the stem and uses primary endings. The first aorist adds an augment and σα, with secondary endings. The aorist passive and future passive both show θη.",
+    tables: [
+      { type: "verb", title: "Future active indicative", lemma: "λύω", gloss: "I will loose", tense: "future", voice: "active", mood: "indicative", forms: N("λύσω λύσεις λύσει λύσομεν λύσετε λύσουσι(ν)"),
+        note: "Present stem + σ + the present active endings. λύσω is also the aorist active subjunctive; context decides." },
+      { type: "verb", title: "Future middle indicative", lemma: "λύω", gloss: "I will loose (for myself)", tense: "future", voice: "middle", mood: "indicative", forms: N("λύσομαι λύσῃ λύσεται λυσόμεθα λύσεσθε λύσονται"),
+        note: "σ + primary middle endings. Many verbs have a middle future with active meaning: ἔσομαι, ζήσομαι, λήμψομαι." },
+      { type: "verb", title: "Future passive indicative", lemma: "λύω", gloss: "I will be loosed", tense: "future", voice: "passive", mood: "indicative", forms: N("λυθήσομαι λυθήσῃ λυθήσεται λυθησόμεθα λυθήσεσθε λυθήσονται"),
+        note: "θη + σ + primary middle endings. The future passive uses middle endings; θησ is the giveaway." },
+      { type: "verb", title: "Aorist active indicative", lemma: "λύω", gloss: "I loosed", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔλυσα ἔλυσας ἔλυσε(ν) ἐλύσαμεν ἐλύσατε ἔλυσαν"),
+        note: "Augment + stem + σα + secondary endings. The α marks the first aorist; 3 sg. has ε(ν) instead." },
+      { type: "verb", title: "Aorist middle indicative", lemma: "λύω", gloss: "I loosed (for myself)", tense: "aorist", voice: "middle", mood: "indicative", forms: N("ἐλυσάμην ἐλύσω ἐλύσατο ἐλυσάμεθα ἐλύσασθε ἐλύσαντο"),
+        note: "Augment + σα + secondary middle endings. In 2 sg. σα + σο loses σ and contracts to -σω." },
+      { type: "verb", title: "Aorist passive indicative", lemma: "λύω", gloss: "I was loosed", tense: "aorist", voice: "passive", mood: "indicative", forms: N("ἐλύθην ἐλύθης ἐλύθη ἐλύθημεν ἐλύθητε ἐλύθησαν"),
+        note: "Augment + θη + secondary active endings with no connecting vowel. 3 pl. -θησαν. Some verbs drop the θ (second aorist passive: ἐγράφην)." }
+    ] },
+  { id: "v-perf", group: "Verbs", title: "Perfect & pluperfect",
+    intro: "The perfect describes a completed action with continuing results. Its marker is reduplication: the first consonant of the stem is doubled with ε (λύ- → λελυ-). Verbs beginning with a vowel lengthen it instead.",
+    tables: [
+      { type: "verb", title: "Perfect active indicative", lemma: "λύω", gloss: "I have loosed", tense: "perfect", voice: "active", mood: "indicative", forms: N("λέλυκα λέλυκας λέλυκε(ν) λελύκαμεν λελύκατε λελύκασι(ν)"),
+        note: "Reduplication + κα + endings. The 3 pl. also appears as λέλυκαν in the NT. Some verbs lack the κ (second perfect: γέγονα)." },
+      { type: "verb", title: "Perfect middle/passive indicative", lemma: "λύω", gloss: "I have been loosed", tense: "perfect", voice: "mp", mood: "indicative", forms: N("λέλυμαι λέλυσαι λέλυται λελύμεθα λέλυσθε λέλυνται"),
+        note: "Reduplication + primary middle endings attached directly, with no connecting vowel or tense formative. Compare Πεπλήρωται (Mark 1:15) and Τετέλεσται (John 19:30)." },
+      { type: "verb", title: "Pluperfect active indicative", lemma: "λύω", gloss: "I had loosed", tense: "pluperfect", voice: "active", mood: "indicative", forms: N("ἐλελύκειν ἐλελύκεις ἐλελύκει ἐλελύκειμεν ἐλελύκειτε ἐλελύκεισαν"),
+        note: "Augment (often dropped in the NT) + reduplication + κει + secondary endings. Rare: under 90 occurrences in the NT." }
+    ] },
+  { id: "v-subj", group: "Verbs", title: "Subjunctive",
+    intro: "The subjunctive is the mood of probability, purpose, and exhortation. Its marks are a lengthened connecting vowel (ω or η) and no augment, even in the aorist. Look for ἵνα, ἐάν, ὅταν, and hortatory “let us…”. The aorist subjunctive is far more common than the present.",
+    tables: [
+      { type: "verb", title: "Present active subjunctive", lemma: "λύω", gloss: "I may loose", tense: "present", voice: "active", mood: "subjunctive", forms: N("λύω λύῃς λύῃ λύωμεν λύητε λύωσι(ν)"),
+        note: "Compare the indicative: λύομεν → λύωμεν, λύετε → λύητε. 1 sg. λύω is identical to the indicative." },
+      { type: "verb", title: "Present middle/passive subjunctive", lemma: "λύω", gloss: "I may be loosed", tense: "present", voice: "mp", mood: "subjunctive", forms: N("λύωμαι λύῃ λύηται λυώμεθα λύησθε λύωνται"),
+        note: "Primary middle endings with the lengthened vowel. 2 sg. λύῃ matches the indicative." },
+      { type: "verb", title: "Aorist active subjunctive", lemma: "λύω", gloss: "I may loose", tense: "aorist", voice: "active", mood: "subjunctive", forms: N("λύσω λύσῃς λύσῃ λύσωμεν λύσητε λύσωσι(ν)"),
+        note: "Unaugmented aorist stem + σ + lengthened vowel + primary endings. No augment means no past time." },
+      { type: "verb", title: "Aorist middle subjunctive", lemma: "λύω", gloss: "I may loose (for myself)", tense: "aorist", voice: "middle", mood: "subjunctive", forms: N("λύσωμαι λύσῃ λύσηται λυσώμεθα λύσησθε λύσωνται"),
+        note: "σ + lengthened vowel + primary middle endings." },
+      { type: "verb", title: "Aorist passive subjunctive", lemma: "λύω", gloss: "I may be loosed", tense: "aorist", voice: "passive", mood: "subjunctive", forms: N("λυθῶ λυθῇς λυθῇ λυθῶμεν λυθῆτε λυθῶσι(ν)"),
+        note: "θ + lengthened vowel; the θη has contracted. The circumflex on the ending is a strong clue." }
+    ] },
+  { id: "v-impv", group: "Verbs", title: "Imperative & optative",
+    intro: "The imperative has only second and third person. A third person imperative is translated “let him…” or “let them…”. The optative expresses a wish or a possibility and is rare in the NT (about 68 times), most often in μὴ γένοιτο, “may it never be!”",
+    tables: [
+      { type: "verb", title: "Present active imperative", lemma: "λύω", gloss: "loose!", tense: "present", voice: "active", mood: "imperative", forms: N("λῦε λυέτω λύετε λυέτωσαν"),
+        note: "2 pl. λύετε is identical to the indicative; context decides. The present imperative often calls for ongoing or habitual action." },
+      { type: "verb", title: "Present middle/passive imperative", lemma: "λύω", gloss: "be loosed!", tense: "present", voice: "mp", mood: "imperative", forms: N("λύου λυέσθω λύεσθε λυέσθωσαν"),
+        note: "2 sg. λύου looks like the imperfect 2 sg. ἐλύου without the augment." },
+      { type: "verb", title: "Aorist active imperative", lemma: "λύω", gloss: "loose!", tense: "aorist", voice: "active", mood: "imperative", forms: N("λῦσον λυσάτω λύσατε λυσάτωσαν"),
+        note: "No augment. 2 sg. -σον is distinctive: Πίστευσον (Acts 16:31)." },
+      { type: "verb", title: "Aorist middle imperative", lemma: "λύω", gloss: "loose (for yourself)!", tense: "aorist", voice: "middle", mood: "imperative", forms: N("λῦσαι λυσάσθω λύσασθε λυσάσθωσαν"),
+        note: "2 sg. λῦσαι is identical to the aorist active infinitive." },
+      { type: "verb", title: "Aorist passive imperative", lemma: "λύω", gloss: "be loosed!", tense: "aorist", voice: "passive", mood: "imperative", forms: N("λύθητι λυθήτω λύθητε λυθήτωσαν"),
+        note: "θη + imperative endings; 2 sg. -θητι." },
+      { type: "verb", title: "Present active optative", lemma: "λύω", gloss: "may I loose", tense: "present", voice: "active", mood: "optative", forms: N("λύοιμι λύοις λύοι λύοιμεν λύοιτε λύοιεν"),
+        note: "The optative marker is ι joined to the connecting vowel: οι in the present." },
+      { type: "verb", title: "Aorist active optative", lemma: "λύω", gloss: "may I loose", tense: "aorist", voice: "active", mood: "optative", forms: N("λύσαιμι λύσαις λύσαι λύσαιμεν λύσαιτε λύσαιεν"),
+        note: "σαι in the aorist. 3 sg. λύσαι differs from the infinitive λῦσαι only in its accent. Compare γένοιτο, εἴη, δῴη (2 Tim 1:16)." }
+    ] },
+  { id: "v-inf", group: "Verbs", title: "Infinitives",
+    intro: "The infinitive is a verbal noun. It has tense and voice but no person or number. With the article it can stand in any case (τὸ ζῆν, Phil 1:21).",
+    tables: [
+      { type: "inf", title: "Infinitives of λύω", lemma: "λύω", gloss: "to loose", rows: [
+        ["present", "active", "λύειν"], ["present", "mp", "λύεσθαι"], ["future", "active", "λύσειν"],
+        ["aorist", "active", "λῦσαι"], ["aorist", "middle", "λύσασθαι"], ["aorist", "passive", "λυθῆναι"],
+        ["perfect", "active", "λελυκέναι"], ["perfect", "mp", "λελύσθαι"]],
+        note: "Four endings to know: -ειν (present and future active), -σθαι (middle and passive), -σαι (aorist active), -ναι (aorist passive and perfect active). Second aorists take -εῖν: λαβεῖν, εἰπεῖν, ἐλθεῖν." }
+    ] },
+  { id: "v-ptc", group: "Verbs", title: "Participles",
+    intro: "The participle is a verbal adjective: it has tense and voice like a verb, and case, number, and gender like an adjective. Active and aorist passive participles use third declension forms in the masculine and neuter, first declension in the feminine. Middle and passive participles in -μενος decline like ἀγαθός.",
+    tables: [
+      { type: "ptc", title: "Present active participle", lemma: "λύω", gloss: "loosing", tense: "present", voice: "active", cols: [
+        { g: "masculine", sg: N("λύων λύοντος λύοντι λύοντα"), pl: N("λύοντες λυόντων λύουσι(ν) λύοντας") },
+        { g: "feminine", sg: N("λύουσα λυούσης λυούσῃ λύουσαν"), pl: N("λύουσαι λυουσῶν λυούσαις λυούσας") },
+        { g: "neuter", sg: N("λῦον λύοντος λύοντι λῦον"), pl: N("λύοντα λυόντων λύουσι(ν) λύοντα") }],
+        note: "Stem + ο + ντ + third declension endings. λύουσι(ν) is both the dative plural participle and the present indicative 3 pl." },
+      { type: "ptc", title: "Present middle/passive participle", lemma: "λύω", gloss: "loosing (for oneself), being loosed", tense: "present", voice: "mp", cols: omenos("λυόμεν", "λυομέν"),
+        note: "Stem + ο + μενος, -η, -ον." },
+      { type: "ptc", title: "Aorist active participle", lemma: "λύω", gloss: "having loosed", tense: "aorist", voice: "active", cols: [
+        { g: "masculine", sg: N("λύσας λύσαντος λύσαντι λύσαντα"), pl: N("λύσαντες λυσάντων λύσασι(ν) λύσαντας") },
+        { g: "feminine", sg: N("λύσασα λυσάσης λυσάσῃ λύσασαν"), pl: N("λύσασαι λυσασῶν λυσάσαις λυσάσας") },
+        { g: "neuter", sg: N("λῦσαν λύσαντος λύσαντι λῦσαν"), pl: N("λύσαντα λυσάντων λύσασι(ν) λύσαντα") }],
+        note: "No augment. σα + ντ; the masculine nominative singular is λύσας. Second aorists use present-type endings on the aorist stem: βαλών, λαβών, ἐλθών." },
+      { type: "ptc", title: "Aorist middle participle", lemma: "λύω", gloss: "having loosed (for oneself)", tense: "aorist", voice: "middle", cols: omenos("λυσάμεν", "λυσαμέν"),
+        note: "σα + μενος, -η, -ον. Second aorist: γενόμενος." },
+      { type: "ptc", title: "Aorist passive participle", lemma: "λύω", gloss: "having been loosed", tense: "aorist", voice: "passive", cols: [
+        { g: "masculine", sg: N("λυθείς λυθέντος λυθέντι λυθέντα"), pl: N("λυθέντες λυθέντων λυθεῖσι(ν) λυθέντας") },
+        { g: "feminine", sg: N("λυθεῖσα λυθείσης λυθείσῃ λυθεῖσαν"), pl: N("λυθεῖσαι λυθεισῶν λυθείσαις λυθείσας") },
+        { g: "neuter", sg: N("λυθέν λυθέντος λυθέντι λυθέν"), pl: N("λυθέντα λυθέντων λυθεῖσι(ν) λυθέντα") }],
+        note: "θε + ντ. The masculine nominative singular λυθείς. Compare Δικαιωθέντες (Rom 5:1)." },
+      { type: "ptc", title: "Perfect active participle", lemma: "λύω", gloss: "having loosed", tense: "perfect", voice: "active", cols: [
+        { g: "masculine", sg: N("λελυκώς λελυκότος λελυκότι λελυκότα"), pl: N("λελυκότες λελυκότων λελυκόσι(ν) λελυκότας") },
+        { g: "feminine", sg: N("λελυκυῖα λελυκυίας λελυκυίᾳ λελυκυῖαν"), pl: N("λελυκυῖαι λελυκυιῶν λελυκυίαις λελυκυίας") },
+        { g: "neuter", sg: N("λελυκός λελυκότος λελυκότι λελυκός"), pl: N("λελυκότα λελυκότων λελυκόσι(ν) λελυκότα") }],
+        note: "Reduplication + κ + οτ. The feminine is -υῖα. The common εἰδώς (knowing, from οἶδα) follows this pattern." },
+      { type: "ptc", title: "Perfect middle/passive participle", lemma: "λύω", gloss: "having been loosed", tense: "perfect", voice: "mp", cols: omenos("λελυμέν", "λελυμέν"),
+        note: "Reduplication + μενος, with the accent always on the penult: σεσῳσμένοι (Eph 2:8), γεγραμμένον." }
+    ] },
+  { id: "v-contract", group: "Other verbs", title: "Contract verbs",
+    intro: "Stems ending in α, ε, or ο contract the stem vowel with the connecting vowel. Contraction happens only in the present and imperfect. Elsewhere the stem vowel lengthens before the tense formative: ἀγαπήσω, ποιήσω, πληρώσω. The lexicon lists the uncontracted form (ἀγαπάω), but you will not meet it in the text.",
+    tables: [
+      { type: "verb", title: "ἀγαπάω · present active indicative", lemma: "ἀγαπάω", gloss: "I love", tense: "present", voice: "active", mood: "indicative", forms: N("ἀγαπῶ ἀγαπᾷς ἀγαπᾷ ἀγαπῶμεν ἀγαπᾶτε ἀγαπῶσι(ν)"),
+        note: "α + ο/ω = ω; α + ε/η = α; α + ει = ᾳ. ἀγαπῶμεν is also the subjunctive (1 John 4:19 is indicative)." },
+      { type: "verb", title: "ποιέω · present active indicative", lemma: "ποιέω", gloss: "I do, make", tense: "present", voice: "active", mood: "indicative", forms: N("ποιῶ ποιεῖς ποιεῖ ποιοῦμεν ποιεῖτε ποιοῦσι(ν)"),
+        note: "ε + ε = ει; ε + ο = ου; ε before a long vowel or diphthong drops out." },
+      { type: "verb", title: "ποιέω · present middle/passive indicative", lemma: "ποιέω", gloss: "I make (for myself), am made", tense: "present", voice: "mp", mood: "indicative", forms: N("ποιοῦμαι ποιῇ ποιεῖται ποιούμεθα ποιεῖσθε ποιοῦνται"),
+        note: "The same contractions with middle endings. A circumflex on the contracted vowel is the usual sign of a contract verb." },
+      { type: "verb", title: "πληρόω · present active indicative", lemma: "πληρόω", gloss: "I fill, fulfill", tense: "present", voice: "active", mood: "indicative", forms: N("πληρῶ πληροῖς πληροῖ πληροῦμεν πληροῦτε πληροῦσι(ν)"),
+        note: "ο + ε/ο/ου = ου; ο + η/ω = ω; ο + ει/ῃ = οι." }
+    ] },
+  { id: "v-2aor", group: "Other verbs", title: "Second aorist & liquid verbs",
+    intro: "Many common verbs form the aorist from a different stem, without σα. Second aorists use imperfect-like endings on the aorist stem: ἔβαλλον is imperfect (present stem βαλλ-), ἔβαλον is aorist (aorist stem βαλ-). Common second aorists: ἦλθον (ἔρχομαι), εἶπον (λέγω), εἶδον (ὁράω), ἔλαβον (λαμβάνω), ἔσχον (ἔχω), ἔγνων (γινώσκω), ἀπέθανον (ἀποθνῄσκω).",
+    tables: [
+      { type: "verb", title: "βάλλω · aorist active indicative", lemma: "βάλλω", gloss: "I threw", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔβαλον ἔβαλες ἔβαλε(ν) ἐβάλομεν ἐβάλετε ἔβαλον"),
+        note: "Augment + aorist stem βαλ- + ο/ε + secondary endings. Only the stem distinguishes it from the imperfect." },
+      { type: "verb", title: "γίνομαι · aorist middle indicative", lemma: "γίνομαι", gloss: "I became", tense: "aorist", voice: "middle", mood: "indicative", forms: N("ἐγενόμην ἐγένου ἐγένετο ἐγενόμεθα ἐγένεσθε ἐγένοντο"),
+        note: "Aorist stem γεν-. καὶ ἐγένετο (and it came to pass) is common in Luke." },
+      { type: "verb", title: "λαμβάνω · aorist active subjunctive", lemma: "λαμβάνω", gloss: "I may receive", tense: "aorist", voice: "active", mood: "subjunctive", forms: N("λάβω λάβῃς λάβῃ λάβωμεν λάβητε λάβωσι(ν)"),
+        note: "Aorist stem λαβ- with the subjunctive endings of the present." },
+      { type: "inf", title: "Second aorist infinitives", lemma: "", gloss: "", rows: [
+        ["aorist", "active", "βαλεῖν", "βάλλω", "to throw"], ["aorist", "active", "λαβεῖν", "λαμβάνω", "to receive"],
+        ["aorist", "active", "ἐλθεῖν", "ἔρχομαι", "to come"], ["aorist", "active", "εἰπεῖν", "λέγω", "to say"],
+        ["aorist", "active", "ἰδεῖν", "ὁράω", "to see"], ["aorist", "middle", "γενέσθαι", "γίνομαι", "to become"]],
+        note: "Active -εῖν with a circumflex, middle -έσθαι. The aorist stem without augment." },
+      { type: "verb", title: "μένω · future active indicative", lemma: "μένω", gloss: "I will remain", tense: "future", voice: "active", mood: "indicative", forms: N("μενῶ μενεῖς μενεῖ μενοῦμεν μενεῖτε μενοῦσι(ν)"),
+        note: "Liquid stems (λ, μ, ν, ρ) reject σ. The future adds εσ, the σ drops, and it contracts like ποιέω. The circumflex distinguishes μενεῖ (future) from μένει (present)." },
+      { type: "verb", title: "μένω · aorist active indicative", lemma: "μένω", gloss: "I remained", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔμεινα ἔμεινας ἔμεινε(ν) ἐμείναμεν ἐμείνατε ἔμειναν"),
+        note: "Liquid aorist: α without σ, and the stem vowel often lengthens (μεν- → μειν-). So also ἀπέστειλα (ἀποστέλλω), ἤγειρα (ἐγείρω)." }
+    ] },
+  { id: "v-mi", group: "Other verbs", title: "μι-verbs",
+    intro: "μι-verbs attach personal endings directly to the stem, with no connecting vowel. Four keys: the present reduplicates with ι (δι-δω-μι); the stem vowel alternates long and short (δω/δο); the aorist uses κα instead of σα (ἔδωκα); and 1 sg. ends in -μι. Compounds are common: ἀποδίδωμι, παραδίδωμι, ἀνίστημι, ἐπιτίθημι, ἀφίημι.",
+    tables: [
+      { type: "verb", title: "δίδωμι · present active indicative", lemma: "δίδωμι", gloss: "I give", tense: "present", voice: "active", mood: "indicative", forms: N("δίδωμι δίδως δίδωσι(ν) δίδομεν δίδοτε διδόασι(ν)"),
+        note: "Long δω in the singular, short δο in the plural." },
+      { type: "verb", title: "δίδωμι · aorist active indicative", lemma: "δίδωμι", gloss: "I gave", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔδωκα ἔδωκας ἔδωκε(ν) ἐδώκαμεν ἐδώκατε ἔδωκαν"),
+        note: "κα where λύω has σα: ἔδωκεν (John 3:16)." },
+      { type: "verb", title: "δίδωμι · aorist active subjunctive", lemma: "δίδωμι", gloss: "I may give", tense: "aorist", voice: "active", mood: "subjunctive", forms: N("δῶ δῷς δῷ δῶμεν δῶτε δῶσι(ν)"),
+        note: "Stem δο contracts with the subjunctive vowel. 3 sg. also δοῖ or δώῃ in some NT texts. Aorist imperative 2 sg.: δός." },
+      { type: "verb", title: "τίθημι · present active indicative", lemma: "τίθημι", gloss: "I put, place", tense: "present", voice: "active", mood: "indicative", forms: N("τίθημι τίθης τίθησι(ν) τίθεμεν τίθετε τιθέασι(ν)"),
+        note: "Stem θη/θε, reduplicated with τι-. τίθησιν (John 10:11): the good shepherd lays down his life." },
+      { type: "verb", title: "τίθημι · aorist active indicative", lemma: "τίθημι", gloss: "I put", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔθηκα ἔθηκας ἔθηκε(ν) ἐθήκαμεν ἐθήκατε ἔθηκαν"),
+        note: "κα aorist, like δίδωμι." },
+      { type: "verb", title: "ἵστημι · present active indicative", lemma: "ἵστημι", gloss: "I cause to stand", tense: "present", voice: "active", mood: "indicative", forms: N("ἵστημι ἵστης ἵστησι(ν) ἵσταμεν ἵστατε ἱστᾶσι(ν)"),
+        note: "Stem στη/στα, reduplicated with ἱ- (the rough breathing replaces an original σ)." },
+      { type: "verb", title: "ἵστημι · second aorist active indicative", lemma: "ἵστημι", gloss: "I stood", tense: "aorist", voice: "active", mood: "indicative", forms: N("ἔστην ἔστης ἔστη ἔστημεν ἔστητε ἔστησαν"),
+        note: "The second aorist is intransitive (I stood); the first aorist ἔστησα is transitive (I set). 3 pl. ἔστησαν is the same in both." },
+      { type: "inf", title: "μι-verb infinitives", lemma: "", gloss: "", rows: [
+        ["present", "active", "διδόναι", "δίδωμι", "to give"], ["aorist", "active", "δοῦναι", "δίδωμι", "to give"],
+        ["present", "active", "τιθέναι", "τίθημι", "to put"], ["aorist", "active", "θεῖναι", "τίθημι", "to put"],
+        ["present", "active", "ἱστάναι", "ἵστημι", "to cause to stand"], ["aorist", "active", "στῆναι", "ἵστημι", "to stand"]],
+        note: "Active infinitives end in -ναι. Participles: διδούς, δούς; τιθείς, θείς; ἱστάς, στάς." }
+    ] }
+];
+const SHEET = Object.fromEntries(SHEETS.map(s => [s.id, s]));
+const CASES = ["nominative", "genitive", "dative", "accusative", "vocative"];
+const CASE_AB = ["Nom.", "Gen.", "Dat.", "Acc.", "Voc."];
+const PERSONS = ["1st", "2nd", "3rd"];
+const GENDER_LABEL = { masculine: "Masc.", feminine: "Fem.", neuter: "Neut.", mf: "Masc./Fem." };
+
+/* ---------- drill items ---------- */
+const ITEMS = [];
+function addItems(cell, base) { for (const f of cell.split("/")) ITEMS.push(Object.assign({ form: f, key: showForm(f) }, base)); }
+for (const s of SHEETS) for (const t of s.tables) {
+  const common = { sheet: s.id, table: t.title, note: t.note, lemma: t.lemma, gloss: t.gloss };
+  if (t.type === "noun") {
+    t.sg.forEach((f, i) => addItems(f, Object.assign({ kind: "nominal", case: CASES[i], number: "singular", gender: t.g }, common)));
+    t.pl.forEach((f, i) => addItems(f, Object.assign({ kind: "nominal", case: CASES[i], number: "plural", gender: t.g }, common)));
+  } else if (t.type === "adj") {
+    for (const c of t.cols) for (const num of ["sg", "pl"]) if (c[num]) c[num].forEach((f, i) =>
+      addItems(f, Object.assign({ kind: "nominal", case: CASES[i], number: num === "sg" ? "singular" : "plural", gender: c.g }, common)));
+  } else if (t.type === "verb") {
+    const slots = t.mood === "imperative" ? [["2nd", "singular"], ["3rd", "singular"], ["2nd", "plural"], ["3rd", "plural"]]
+      : [["1st", "singular"], ["2nd", "singular"], ["3rd", "singular"], ["1st", "plural"], ["2nd", "plural"], ["3rd", "plural"]];
+    t.forms.forEach((f, i) => addItems(f, Object.assign({ kind: "verb", tense: t.tense, voice: t.voice, mood: t.mood, person: slots[i][0], number: slots[i][1] }, common)));
+  } else if (t.type === "ptc") {
+    for (const c of t.cols) for (const num of ["sg", "pl"]) c[num].forEach((f, i) =>
+      addItems(f, Object.assign({ kind: "verb", tense: t.tense, voice: t.voice, mood: "participle", case: CASES[i], number: num === "sg" ? "singular" : "plural", gender: c.g }, common)));
+  } else if (t.type === "inf") {
+    for (const r of t.rows) addItems(r[2], Object.assign({ kind: "verb", tense: r[0], voice: r[1], mood: "infinitive" }, common, r[3] ? { lemma: r[3], gloss: r[4] } : {}));
+  }
+}
+const voiceLabel = v => v === "mp" ? "middle/passive" : v;
+function describe(it) {
+  if (it.kind === "verb") {
+    let s = cap([it.tense, voiceLabel(it.voice), it.mood].filter(Boolean).join(" "));
+    if (it.mood === "participle") s += `, ${it.case} ${it.number} ${it.gender}`;
+    else if (it.mood !== "infinitive") s += `, ${it.person} person ${it.number}`;
+    return s;
+  }
+  return cap(`${it.case} ${it.number}` + (it.gender ? " " + (it.gender === "mf" ? "masculine/feminine" : it.gender) : ""));
+}
+
+/* ---------- vocabulary data (lexical form | gloss | approx. NT frequency) ---------- */
+const VOCAB_RAW = `ὁ, ἡ, τό|the|19867
+καί|and, even, also|9161
+αὐτός, -ή, -ό|he, she, it; self; same|5596
+δέ|but, and|2792
+ἐν|in, on, among (+ dat.)|2752
+εἰμί|I am|2462
+λέγω|I say, speak|2353
+ὑμεῖς|you (plural)|1840
+εἰς|into, in, among (+ acc.)|1767
+ἐγώ|I|1725
+οὐ, οὐκ, οὐχ|not|1623
+ὅς, ἥ, ὅ|who, which|1407
+οὗτος, αὕτη, τοῦτο|this; these (pl.)|1387
+θεός, -οῦ, ὁ|God, god|1317
+ὅτι|that, since, because|1296
+πᾶς, πᾶσα, πᾶν|all, every|1243
+σύ|you (singular)|1067
+μή|not, lest|1042
+γάρ|for, then|1041
+Ἰησοῦς, -οῦ, ὁ|Jesus, Joshua|917
+ἐκ, ἐξ|from, out of (+ gen.)|914
+ἐπί|on, over (+ gen.); on, at (+ dat.); on, to, against (+ acc.)|890
+ἡμεῖς|we|864
+κύριος, -ου, ὁ|Lord, lord, master, sir|717
+ἔχω|I have, hold|708
+πρός|to, toward, with (+ acc.)|700
+γίνομαι|I become, am, exist, happen|669
+διά|through (+ gen.); on account of (+ acc.)|667
+ἵνα|in order that, so that, that|663
+ἀπό|from, away from (+ gen.)|646
+ἀλλά|but, yet, except|638
+ἔρχομαι|I come, go|632
+ποιέω|I do, make|568
+τίς, τί|who? what? which? why?|556
+ἄνθρωπος, -ου, ὁ|man, human being, person|550
+τις, τι|someone, something, a certain one, anyone|543
+Χριστός, -οῦ, ὁ|Christ, Messiah, Anointed One|529
+ὡς|as, like, when, that, how, about|504
+εἰ|if|502
+οὖν|therefore, then, accordingly|499
+κατά|down from, against (+ gen.); according to, throughout (+ acc.)|473
+μετά|with (+ gen.); after (+ acc.)|469
+ὁράω|I see, notice, experience|454
+ἀκούω|I hear, learn, obey, understand|428
+πολύς, πολλή, πολύ|much, many; often (adv.)|416
+δίδωμι|I give, entrust, grant|415
+πατήρ, πατρός, ὁ|father|413
+ἡμέρα, -ας, ἡ|day|389
+πνεῦμα, -ατος, τό|spirit, Spirit, wind, breath|379
+υἱός, -οῦ, ὁ|son, descendant|377
+ἐάν|if, when|351
+εἷς, μία, ἕν|one|345
+ἀδελφός, -οῦ, ὁ|brother|343
+ἤ|or, than|343
+περί|concerning, about (+ gen.); around (+ acc.)|333
+λόγος, -ου, ὁ|word, Word, statement, message|330
+ἑαυτοῦ, -ῆς, -οῦ|himself, herself, itself|319
+οἶδα|I know, understand|318
+λαλέω|I speak, say|296
+οὐρανός, -οῦ, ὁ|heaven, sky|273
+ἐκεῖνος, -η, -ο|that; those (pl.)|265
+μαθητής, -οῦ, ὁ|disciple|261
+λαμβάνω|I take, receive|258
+γῆ, γῆς, ἡ|earth, land, region, humanity|250
+μέγας, μεγάλη, μέγα|large, great|243
+πίστις, -εως, ἡ|faith, belief, trust|243
+πιστεύω|I believe, have faith in, trust|241
+οὐδείς, οὐδεμία, οὐδέν|no one, none, nothing|234
+ἅγιος, -α, -ον|holy; saints (pl. noun)|233
+ἀποκρίνομαι|I answer|231
+ὄνομα, -ατος, τό|name, reputation|231
+γινώσκω|I know, come to know, realize, learn|222
+ὑπό|by (+ gen.); under (+ acc.)|220
+ἐξέρχομαι|I go out|218
+ἀνήρ, ἀνδρός, ὁ|man, male, husband|216
+γυνή, γυναικός, ἡ|woman, wife|215
+τε|and (so), so|215
+δύναμαι|I am able, I can|210
+θέλω|I will, wish, desire|208
+οὕτως|thus, so, in this manner|208
+ἰδού|see! look! behold!|200
+Ἰουδαῖος, -αία, -αῖον|Jewish; a Jew (noun)|195
+εἰσέρχομαι|I come in, go in, enter|194
+νόμος, -ου, ὁ|law, principle|194
+παρά|from (+ gen.); beside, in the presence of (+ dat.); alongside (+ acc.)|194
+γράφω|I write|191
+κόσμος, -ου, ὁ|world, universe, humankind|186
+καθώς|as, even as|182
+μέν|on the one hand, indeed|179
+χείρ, χειρός, ἡ|hand, arm, finger|177
+εὑρίσκω|I find|176
+ἄγγελος, -ου, ὁ|angel, messenger|175
+ὄχλος, -ου, ὁ|crowd, multitude|175
+ἁμαρτία, -ας, ἡ|sin|173
+ἔργον, -ου, τό|work, deed, action|169
+ἄν|(untranslatable particle: contingency)|166
+δόξα, -ης, ἡ|glory, majesty, fame|166
+βασιλεία, -ας, ἡ|kingdom|162
+ἔθνος, -ους, τό|nation; Gentiles (pl.)|162
+πόλις, -εως, ἡ|city|162
+τότε|then, thereafter|160
+ἐσθίω|I eat|158
+Παῦλος, -ου, ὁ|Paul|158
+καρδία, -ας, ἡ|heart|156
+Πέτρος, -ου, ὁ|Peter|156
+ἄλλος, -η, -ο|other, another|155
+πρῶτος, -η, -ον|first, earlier|155
+χάρις, -ιτος, ἡ|grace, favor, kindness|155
+ἵστημι|I stand, cause to stand, set|154
+πορεύομαι|I go, proceed, live|153
+ὑπέρ|on behalf of (+ gen.); above (+ acc.)|150
+καλέω|I call, name, invite|148
+νῦν|now; the present (noun)|147
+σάρξ, σαρκός, ἡ|flesh, body, sinful nature|147
+ἕως|until (conj.); as far as (+ gen.)|146
+ἐγείρω|I raise up, wake|144
+ὅστις, ἥτις, ὅτι|whoever, whichever, whatever|144
+προφήτης, -ου, ὁ|prophet|144
+ἀγαπάω|I love|143
+ἀφίημι|I let go, forgive, permit, leave|143
+οὐδέ|and not, not even, neither, nor|143
+λαός, -οῦ, ὁ|people, crowd|142
+σῶμα, -ατος, τό|body|142
+πάλιν|again|141
+ζάω|I live|140
+φωνή, -ῆς, ἡ|sound, noise, voice|139
+δύο|two|135
+ζωή, -ῆς, ἡ|life|135
+Ἰωάννης, -ου, ὁ|John|135
+βλέπω|I see, look at|133
+ἀποστέλλω|I send away|132
+ἀμήν|truly, amen, so let it be|129
+νεκρός, -ά, -όν|dead; dead body (noun)|128
+σύν|with (+ dat.)|128
+δοῦλος, -ου, ὁ|slave, servant|126
+ὅταν|whenever|123
+αἰών, -ῶνος, ὁ|age, eternity|122
+ἀρχιερεύς, -έως, ὁ|high priest, chief priest|122
+βάλλω|I throw|122
+θάνατος, -ου, ὁ|death|120
+δύναμις, -εως, ἡ|power, miracle|119
+παραδίδωμι|I entrust, hand over, betray|119
+μένω|I remain, live|118
+ἀπέρχομαι|I depart|117
+ζητέω|I seek, desire, try to obtain|117
+ἀγάπη, -ης, ἡ|love|116
+βασιλεύς, -έως, ὁ|king|115
+ἐκκλησία, -ας, ἡ|church, congregation, assembly|114
+ἴδιος, -α, -ον|one's own|114
+κρίνω|I judge, decide, prefer|114
+μόνος, -η, -ον|alone, only|114
+οἶκος, -ου, ὁ|house, home, household|114
+ἀποθνῄσκω|I die, am about to die|111
+ὅσος, -η, -ον|as great as, as many as|110
+ἀλήθεια, -ας, ἡ|truth|109
+μέλλω|I am about to|109
+ὅλος, -η, -ον|whole, complete; entirely (adv.)|109
+παρακαλέω|I call, urge, exhort, comfort|109
+ἀνίστημι|I raise up; I rise, get up|108
+σῴζω|I save, deliver, rescue|106
+ὥρα, -ας, ἡ|hour, occasion, moment|106
+ἐκεῖ|there, in that place|105
+ὅτε|when|103
+πῶς|how?|103
+ψυχή, -ῆς, ἡ|soul, life, self|103
+ἀγαθός, -ή, -όν|good, useful|102
+ἐξουσία, -ας, ἡ|authority, power|102
+αἴρω|I raise, take up, take away|101
+δεῖ|it is necessary|101
+καλός, -ή, -όν|beautiful, good|101
+ὁδός, -οῦ, ἡ|way, road, journey, conduct|101
+ἀλλήλων|one another|100
+ὀφθαλμός, -οῦ, ὁ|eye, sight|100
+τίθημι|I put, place|100
+τέκνον, -ου, τό|child, descendant|99
+ἕτερος, -α, -ον|other, another, different|98
+Φαρισαῖος, -ου, ὁ|Pharisee|98
+αἷμα, -ατος, τό|blood|97
+ἄρτος, -ου, ὁ|bread, loaf, food|97
+γεννάω|I beget, give birth to|97
+διδάσκω|I teach|97
+περιπατέω|I walk around, live|95
+φοβέομαι|I fear|95
+ἐνώπιον|before (+ gen.)|94
+τόπος, -ου, ὁ|place, location|94
+ἔτι|still, yet, even|93
+οἰκία, -ας, ἡ|house, home|93
+πούς, ποδός, ὁ|foot|93
+δικαιοσύνη, -ης, ἡ|righteousness|92
+εἰρήνη, -ης, ἡ|peace|92
+θάλασσα, -ης, ἡ|sea, lake|91
+κάθημαι|I sit (down), live|91
+ἀκολουθέω|I follow, accompany|90
+ἀπόλλυμι|I destroy, kill; I perish (mid.)|90
+μηδείς, μηδεμία, μηδέν|no one, nothing|90
+πίπτω|I fall|90
+ἑπτά|seven|88
+οὔτε|and not, neither, nor|87
+ἄρχω|I rule; I begin (mid.)|86
+πληρόω|I fill, complete, fulfill|86
+προσέρχομαι|I come to, go to|86
+καιρός, -οῦ, ὁ|(appointed) time, season|85
+προσεύχομαι|I pray|85
+κἀγώ|and I, but I, I also|84
+μήτηρ, μητρός, ἡ|mother|83
+ὥστε|therefore, so that|83
+ἀναβαίνω|I go up, come up|82
+ἕκαστος, -η, -ον|each, every|82
+ὅπου|where|82
+ἐκβάλλω|I cast out, send out|81
+καταβαίνω|I go down, come down|81
+μᾶλλον|more, rather|81
+ἀπόστολος, -ου, ὁ|apostle, envoy, messenger|80
+Μωϋσῆς, -έως, ὁ|Moses|80
+δίκαιος, -αία, -αιον|right, just, righteous|79
+πέμπω|I send|79
+ὑπάγω|I depart|79
+πονηρός, -ά, -όν|evil, bad, wicked|78
+στόμα, -ατος, τό|mouth|78
+ἀνοίγω|I open|77
+βαπτίζω|I baptize, dip, immerse|77
+Ἰερουσαλήμ, ἡ|Jerusalem|77
+σημεῖον, -ου, τό|sign, miracle|77
+ἐμός, ἐμή, ἐμόν|my, mine|76
+εὐαγγέλιον, -ου, τό|good news, gospel|76
+μαρτυρέω|I bear witness, testify|76
+πρόσωπον, -ου, τό|face, appearance|76
+ὕδωρ, ὕδατος, τό|water|76
+δώδεκα|twelve|75
+κεφαλή, -ῆς, ἡ|head|75
+Σίμων, -ωνος, ὁ|Simon|75
+ἀποκτείνω|I kill|74
+χαίρω|I rejoice|74
+Ἀβραάμ, ὁ|Abraham|73
+πίνω|I drink|73
+φῶς, φωτός, τό|light|73
+αἰώνιος, -ον|eternal|71
+πῦρ, πυρός, τό|fire|71
+ἱερόν, -οῦ, τό|temple|71
+αἰτέω|I ask, demand|70
+τηρέω|I keep, guard, observe|70
+Ἰσραήλ, ὁ|Israel|68
+πλοῖον, -ου, τό|ship, boat|68
+ῥῆμα, -ατος, τό|word, saying, thing|68
+σάββατον, -ου, τό|Sabbath, week|68
+τρεῖς, τρία|three|68
+ἄγω|I lead, bring, arrest|67
+ἐντολή, -ῆς, ἡ|commandment|67
+πιστός, -ή, -όν|faithful, believing|67
+ἀπολύω|I release, send away, divorce|66
+καρπός, -οῦ, ὁ|fruit, crop, result|66
+πρεσβύτερος, -α, -ον|elder; older|66
+φέρω|I carry, bear, lead|66
+φημί|I say, affirm|66
+εἴτε|if, whether|65
+γραμματεύς, -έως, ὁ|scribe|63
+δαιμόνιον, -ου, τό|demon|63
+ἔξω|outside (adv.); out of (+ gen.)|63
+ἐρωτάω|I ask, request, entreat|63
+ὄρος, ὄρους, τό|mountain, hill|63
+δοκέω|I think, seem|62
+θέλημα, -ατος, τό|will, desire|62
+θρόνος, -ου, ὁ|throne|62
+Ἱεροσόλυμα, τά|Jerusalem|62
+ἀγαπητός, -ή, -όν|beloved|61
+Γαλιλαία, -ας, ἡ|Galilee|61
+δοξάζω|I praise, honor, glorify|61
+ἤδη|now, already|61
+κηρύσσω|I proclaim, preach|61
+νύξ, νυκτός, ἡ|night|61
+ὧδε|here|61
+ἱμάτιον, -ου, τό|garment, cloak|60
+προσκυνέω|I worship|60
+ὑπάρχω|I am, exist; possessions (ptc. as noun)|60
+ἀσπάζομαι|I greet, salute|59
+Δαυίδ, ὁ|David|59
+διδάσκαλος, -ου, ὁ|teacher|59
+λίθος, -ου, ὁ|stone|59
+συνάγω|I gather together, invite|59
+χαρά, -ᾶς, ἡ|joy, delight|59
+θεωρέω|I look at, observe, perceive|58
+μέσος, -η, -ον|middle, in the midst|58
+τοιοῦτος, -αύτη, -οῦτον|such, of such a kind|57
+δέχομαι|I take, receive|56
+ἐπερωτάω|I ask (for), question|56
+κράζω|I cry out, call out|56
+μηδέ|but not, nor, not even|56
+συναγωγή, -ῆς, ἡ|synagogue, meeting|56
+τρίτος, -η, -ον|third|56
+ἀρχή, -ῆς, ἡ|beginning, ruler|55
+λοιπός, -ή, -όν|remaining; the rest (noun); finally (adv.)|55
+Πιλᾶτος, -ου, ὁ|Pilate|55
+δεξιός, -ά, -όν|right (as opposed to left)|54
+εὐαγγελίζω|I bring good news, preach (the gospel)|54
+Μαρία, -ας, ἡ|Mary (also Μαριάμ)|54
+οὐχί|not (emphatic)|54
+χρόνος, -ου, ὁ|time|54
+διό|therefore, for this reason|53
+ἐλπίς, -ίδος, ἡ|hope|53
+ὅπως|how, that, in order that|53
+ἐπαγγελία, -ας, ἡ|promise|52
+ἔσχατος, -η, -ον|last|52
+παιδίον, -ου, τό|child, infant|52
+πείθω|I persuade; I trust (perf.)|52
+σπείρω|I sow|52
+εὐθύς|immediately|51
+σοφία, -ας, ἡ|wisdom|51
+γλῶσσα, -ης, ἡ|tongue, language|50
+γραφή, -ῆς, ἡ|writing, Scripture|50
+κακός, -ή, -όν|bad, evil|50`;
+const VOCAB = VOCAB_RAW.split("\n").map(l => { const [lex, gloss, f] = l.split("|"); return { lex, gloss, freq: +f, head: lex.split(",")[0] }; });
+const BANDS = [
+  { id: "b500", label: "500+", test: f => f >= 500 },
+  { id: "b200", label: "200–499", test: f => f >= 200 && f < 500 },
+  { id: "b100", label: "100–199", test: f => f >= 100 && f < 200 },
+  { id: "b50", label: "50–99", test: f => f < 100 }
+];
+
+/* ---------- verses (form | lexical form | contextual gloss | parsing code) ---------- */
+const VERSES_RAW = [
+["Matthew 1:21", `τέξεται|τίκτω|she will bear|V-FMI-3S
+δὲ|δέ|and|CONJ
+υἱόν,|υἱός|a son|N-ASM
+καὶ|καί|and|CONJ
+καλέσεις|καλέω|you will call|V-FAI-2S
+τὸ|ὁ|the|T-ASN
+ὄνομα|ὄνομα|name|N-ASN
+αὐτοῦ|αὐτός|his|P-GSM
+Ἰησοῦν·|Ἰησοῦς|Jesus|N-ASM
+αὐτὸς|αὐτός|he|P-NSM
+γὰρ|γάρ|for|CONJ
+σώσει|σῴζω|will save|V-FAI-3S
+τὸν|ὁ|the|T-ASM
+λαὸν|λαός|people|N-ASM
+αὐτοῦ|αὐτός|his|P-GSM
+ἀπὸ|ἀπό|from|PREP
+τῶν|ὁ|the|T-GPF
+ἁμαρτιῶν|ἁμαρτία|sins|N-GPF
+αὐτῶν.|αὐτός|their|P-GPM`],
+["Matthew 5:3", `Μακάριοι|μακάριος|blessed|A-NPM
+οἱ|ὁ|the|T-NPM
+πτωχοὶ|πτωχός|poor|A-NPM
+τῷ|ὁ|the|T-DSN
+πνεύματι,|πνεῦμα|in spirit|N-DSN
+ὅτι|ὅτι|for|CONJ
+αὐτῶν|αὐτός|theirs|P-GPM
+ἐστιν|εἰμί|is|V-PXI-3S
+ἡ|ὁ|the|T-NSF
+βασιλεία|βασιλεία|kingdom|N-NSF
+τῶν|ὁ|the|T-GPM
+οὐρανῶν.|οὐρανός|of heaven|N-GPM`],
+["Matthew 28:6a", `οὐκ|οὐ|not|PRT
+ἔστιν|εἰμί|he is|V-PXI-3S
+ὧδε,|ὧδε|here|ADV
+ἠγέρθη|ἐγείρω|he has been raised|V-API-3S
+γὰρ|γάρ|for|CONJ
+καθὼς|καθώς|just as|CONJ
+εἶπεν·|λέγω|he said|V-AAI-3S`],
+["Mark 1:15", `καὶ|καί|and|CONJ
+λέγων|λέγω|saying|V-PAP-NSM
+ὅτι|ὅτι|(introduces direct speech)|CONJ
+Πεπλήρωται|πληρόω|has been fulfilled|V-RPI-3S
+ὁ|ὁ|the|T-NSM
+καιρὸς|καιρός|time|N-NSM
+καὶ|καί|and|CONJ
+ἤγγικεν|ἐγγίζω|has come near|V-RAI-3S
+ἡ|ὁ|the|T-NSF
+βασιλεία|βασιλεία|kingdom|N-NSF
+τοῦ|ὁ|the|T-GSM
+θεοῦ·|θεός|of God|N-GSM
+μετανοεῖτε|μετανοέω|repent|V-PAM-2P
+καὶ|καί|and|CONJ
+πιστεύετε|πιστεύω|believe|V-PAM-2P
+ἐν|ἐν|in|PREP
+τῷ|ὁ|the|T-DSN
+εὐαγγελίῳ.|εὐαγγέλιον|gospel|N-DSN`],
+["Mark 10:45", `καὶ|καί|even|CONJ
+γὰρ|γάρ|for|CONJ
+ὁ|ὁ|the|T-NSM
+υἱὸς|υἱός|Son|N-NSM
+τοῦ|ὁ|the|T-GSM
+ἀνθρώπου|ἄνθρωπος|of Man|N-GSM
+οὐκ|οὐ|not|PRT
+ἦλθεν|ἔρχομαι|came|V-AAI-3S
+διακονηθῆναι|διακονέω|to be served|V-APN
+ἀλλὰ|ἀλλά|but|CONJ
+διακονῆσαι|διακονέω|to serve|V-AAN
+καὶ|καί|and|CONJ
+δοῦναι|δίδωμι|to give|V-AAN
+τὴν|ὁ|the|T-ASF
+ψυχὴν|ψυχή|life|N-ASF
+αὐτοῦ|αὐτός|his|P-GSM
+λύτρον|λύτρον|ransom|N-ASN
+ἀντὶ|ἀντί|for, in place of|PREP
+πολλῶν.|πολύς|many|A-GPM`],
+["Luke 2:11", `ὅτι|ὅτι|for|CONJ
+ἐτέχθη|τίκτω|has been born|V-API-3S
+ὑμῖν|σύ|to you|P-2DP
+σήμερον|σήμερον|today|ADV
+σωτὴρ|σωτήρ|a Savior|N-NSM
+ὅς|ὅς|who|R-NSM
+ἐστιν|εἰμί|is|V-PXI-3S
+χριστὸς|χριστός|Christ|N-NSM
+κύριος|κύριος|Lord|N-NSM
+ἐν|ἐν|in|PREP
+πόλει|πόλις|city|N-DSF
+Δαυίδ.|Δαυίδ|of David|N-PRI`],
+["Luke 24:34", `λέγοντας|λέγω|saying|V-PAP-APM
+ὅτι|ὅτι|(introduces direct speech)|CONJ
+ὄντως|ὄντως|truly, really|ADV
+ἠγέρθη|ἐγείρω|has been raised|V-API-3S
+ὁ|ὁ|the|T-NSM
+κύριος|κύριος|Lord|N-NSM
+καὶ|καί|and|CONJ
+ὤφθη|ὁράω|has appeared|V-API-3S
+Σίμωνι.|Σίμων|to Simon|N-DSM`],
+["John 1:1", `Ἐν|ἐν|in|PREP
+ἀρχῇ|ἀρχή|beginning|N-DSF
+ἦν|εἰμί|was|V-IXI-3S
+ὁ|ὁ|the|T-NSM
+λόγος,|λόγος|Word|N-NSM
+καὶ|καί|and|CONJ
+ὁ|ὁ|the|T-NSM
+λόγος|λόγος|Word|N-NSM
+ἦν|εἰμί|was|V-IXI-3S
+πρὸς|πρός|with|PREP
+τὸν|ὁ|the|T-ASM
+θεόν,|θεός|God|N-ASM
+καὶ|καί|and|CONJ
+θεὸς|θεός|God|N-NSM
+ἦν|εἰμί|was|V-IXI-3S
+ὁ|ὁ|the|T-NSM
+λόγος.|λόγος|Word|N-NSM`, "θεός without the article is the predicate nominative, placed first for emphasis; ὁ λόγος, with the article, is the subject."],
+["John 1:14", `Καὶ|καί|and|CONJ
+ὁ|ὁ|the|T-NSM
+λόγος|λόγος|Word|N-NSM
+σὰρξ|σάρξ|flesh|N-NSF
+ἐγένετο|γίνομαι|became|V-AMI-3S
+καὶ|καί|and|CONJ
+ἐσκήνωσεν|σκηνόω|dwelt, pitched his tent|V-AAI-3S
+ἐν|ἐν|among|PREP
+ἡμῖν,|ἐγώ|us|P-1DP
+καὶ|καί|and|CONJ
+ἐθεασάμεθα|θεάομαι|we beheld|V-AMI-1P
+τὴν|ὁ|the|T-ASF
+δόξαν|δόξα|glory|N-ASF
+αὐτοῦ,|αὐτός|his|P-GSM
+δόξαν|δόξα|glory|N-ASF
+ὡς|ὡς|as|CONJ
+μονογενοῦς|μονογενής|of the only Son|A-GSM
+παρὰ|παρά|from|PREP
+πατρός,|πατήρ|the Father|N-GSM
+πλήρης|πλήρης|full|A-NSM
+χάριτος|χάρις|of grace|N-GSF
+καὶ|καί|and|CONJ
+ἀληθείας.|ἀλήθεια|of truth|N-GSF`, "πλήρης is often treated as indeclinable in Koine; here it is nominative in form."],
+["John 1:29b", `Ἴδε|ὁράω|behold|V-AAM-2S
+ὁ|ὁ|the|T-NSM
+ἀμνὸς|ἀμνός|Lamb|N-NSM
+τοῦ|ὁ|the|T-GSM
+θεοῦ|θεός|of God|N-GSM
+ὁ|ὁ|the (one)|T-NSM
+αἴρων|αἴρω|taking away|V-PAP-NSM
+τὴν|ὁ|the|T-ASF
+ἁμαρτίαν|ἁμαρτία|sin|N-ASF
+τοῦ|ὁ|the|T-GSM
+κόσμου.|κόσμος|of the world|N-GSM`, "ἴδε is the aorist imperative of ὁράω (εἶδον) used as a particle: look! behold!"],
+["John 3:16", `Οὕτως|οὕτως|so, in this way|ADV
+γὰρ|γάρ|for|CONJ
+ἠγάπησεν|ἀγαπάω|loved|V-AAI-3S
+ὁ|ὁ|the|T-NSM
+θεὸς|θεός|God|N-NSM
+τὸν|ὁ|the|T-ASM
+κόσμον,|κόσμος|world|N-ASM
+ὥστε|ὥστε|that|CONJ
+τὸν|ὁ|the|T-ASM
+υἱὸν|υἱός|Son|N-ASM
+τὸν|ὁ|the|T-ASM
+μονογενῆ|μονογενής|only, one and only|A-ASM
+ἔδωκεν,|δίδωμι|he gave|V-AAI-3S
+ἵνα|ἵνα|so that|CONJ
+πᾶς|πᾶς|everyone|A-NSM
+ὁ|ὁ|the (one)|T-NSM
+πιστεύων|πιστεύω|believing|V-PAP-NSM
+εἰς|εἰς|in|PREP
+αὐτὸν|αὐτός|him|P-ASM
+μὴ|μή|not|PRT
+ἀπόληται|ἀπόλλυμι|should perish|V-AMS-3S
+ἀλλ᾽|ἀλλά|but|CONJ
+ἔχῃ|ἔχω|have|V-PAS-3S
+ζωὴν|ζωή|life|N-ASF
+αἰώνιον.|αἰώνιος|eternal|A-ASF`, "ὥστε with the indicative ἔδωκεν states an actual result. αἰώνιον is a two-termination adjective: the masculine form serves for the feminine ζωήν."],
+["John 6:35a", `εἶπεν|λέγω|said|V-AAI-3S
+αὐτοῖς|αὐτός|to them|P-DPM
+ὁ|ὁ|the|T-NSM
+Ἰησοῦς·|Ἰησοῦς|Jesus|N-NSM
+Ἐγώ|ἐγώ|I|P-1NS
+εἰμι|εἰμί|am|V-PXI-1S
+ὁ|ὁ|the|T-NSM
+ἄρτος|ἄρτος|bread|N-NSM
+τῆς|ὁ|the|T-GSF
+ζωῆς·|ζωή|of life|N-GSF`],
+["John 8:12b", `Ἐγώ|ἐγώ|I|P-1NS
+εἰμι|εἰμί|am|V-PXI-1S
+τὸ|ὁ|the|T-NSN
+φῶς|φῶς|light|N-NSN
+τοῦ|ὁ|the|T-GSM
+κόσμου·|κόσμος|of the world|N-GSM`],
+["John 10:11", `Ἐγώ|ἐγώ|I|P-1NS
+εἰμι|εἰμί|am|V-PXI-1S
+ὁ|ὁ|the|T-NSM
+ποιμὴν|ποιμήν|shepherd|N-NSM
+ὁ|ὁ|the|T-NSM
+καλός.|καλός|good|A-NSM
+ὁ|ὁ|the|T-NSM
+ποιμὴν|ποιμήν|shepherd|N-NSM
+ὁ|ὁ|the|T-NSM
+καλὸς|καλός|good|A-NSM
+τὴν|ὁ|the|T-ASF
+ψυχὴν|ψυχή|life|N-ASF
+αὐτοῦ|αὐτός|his|P-GSM
+τίθησιν|τίθημι|lays down|V-PAI-3S
+ὑπὲρ|ὑπέρ|for, on behalf of|PREP
+τῶν|ὁ|the|T-GPN
+προβάτων·|πρόβατον|sheep|N-GPN`],
+["John 10:30", `ἐγὼ|ἐγώ|I|P-1NS
+καὶ|καί|and|CONJ
+ὁ|ὁ|the|T-NSM
+πατὴρ|πατήρ|Father|N-NSM
+ἕν|εἷς|one|A-NSN
+ἐσμεν.|εἰμί|are|V-PXI-1P`, "ἕν is neuter: one in essence, not one person (which would be εἷς)."],
+["John 11:25", `εἶπεν|λέγω|said|V-AAI-3S
+αὐτῇ|αὐτός|to her|P-DSF
+ὁ|ὁ|the|T-NSM
+Ἰησοῦς·|Ἰησοῦς|Jesus|N-NSM
+Ἐγώ|ἐγώ|I|P-1NS
+εἰμι|εἰμί|am|V-PXI-1S
+ἡ|ὁ|the|T-NSF
+ἀνάστασις|ἀνάστασις|resurrection|N-NSF
+καὶ|καί|and|CONJ
+ἡ|ὁ|the|T-NSF
+ζωή·|ζωή|life|N-NSF
+ὁ|ὁ|the (one)|T-NSM
+πιστεύων|πιστεύω|believing|V-PAP-NSM
+εἰς|εἰς|in|PREP
+ἐμὲ|ἐγώ|me|P-1AS
+κἂν|κἄν|even if|CONJ
+ἀποθάνῃ|ἀποθνῄσκω|he dies|V-AAS-3S
+ζήσεται,|ζάω|will live|V-FMI-3S`],
+["John 11:35", `ἐδάκρυσεν|δακρύω|wept|V-AAI-3S
+ὁ|ὁ|the|T-NSM
+Ἰησοῦς.|Ἰησοῦς|Jesus|N-NSM`],
+["John 14:6", `λέγει|λέγω|says|V-PAI-3S
+αὐτῷ|αὐτός|to him|P-DSM
+ὁ|ὁ|the|T-NSM
+Ἰησοῦς·|Ἰησοῦς|Jesus|N-NSM
+Ἐγώ|ἐγώ|I|P-1NS
+εἰμι|εἰμί|am|V-PXI-1S
+ἡ|ὁ|the|T-NSF
+ὁδὸς|ὁδός|way|N-NSF
+καὶ|καί|and|CONJ
+ἡ|ὁ|the|T-NSF
+ἀλήθεια|ἀλήθεια|truth|N-NSF
+καὶ|καί|and|CONJ
+ἡ|ὁ|the|T-NSF
+ζωή·|ζωή|life|N-NSF
+οὐδεὶς|οὐδείς|no one|A-NSM
+ἔρχεται|ἔρχομαι|comes|V-PMI-3S
+πρὸς|πρός|to|PREP
+τὸν|ὁ|the|T-ASM
+πατέρα|πατήρ|Father|N-ASM
+εἰ|εἰ|if|CONJ
+μὴ|μή|not (εἰ μή: except)|PRT
+δι᾽|διά|through|PREP
+ἐμοῦ.|ἐγώ|me|P-1GS`, "λέγει is a historical present, common in John's narrative. ὁδός is a feminine second declension noun."],
+["John 19:30a", `ὅτε|ὅτε|when|CONJ
+οὖν|οὖν|then|CONJ
+ἔλαβεν|λαμβάνω|he received|V-AAI-3S
+τὸ|ὁ|the|T-ASN
+ὄξος|ὄξος|sour wine|N-ASN
+ὁ|ὁ|the|T-NSM
+Ἰησοῦς|Ἰησοῦς|Jesus|N-NSM
+εἶπεν·|λέγω|he said|V-AAI-3S
+Τετέλεσται,|τελέω|it is finished|V-RPI-3S`, "The perfect τετέλεσται: the work is completed and stands completed."],
+["John 20:28", `ἀπεκρίθη|ἀποκρίνομαι|answered|V-API-3S
+Θωμᾶς|Θωμᾶς|Thomas|N-NSM
+καὶ|καί|and|CONJ
+εἶπεν|λέγω|said|V-AAI-3S
+αὐτῷ·|αὐτός|to him|P-DSM
+Ὁ|ὁ|the|T-NSM
+κύριός|κύριος|Lord|N-NSM
+μου|ἐγώ|my|P-1GS
+καὶ|καί|and|CONJ
+ὁ|ὁ|the|T-NSM
+θεός|θεός|God|N-NSM
+μου.|ἐγώ|my|P-1GS`, "The nominative with the article is used here for direct address. ἀπεκρίθη is passive in form with active meaning."],
+["Acts 16:31", `οἱ|ὁ|they|T-NPM
+δὲ|δέ|and|CONJ
+εἶπαν·|λέγω|said|V-AAI-3P
+Πίστευσον|πιστεύω|believe|V-AAM-2S
+ἐπὶ|ἐπί|on|PREP
+τὸν|ὁ|the|T-ASM
+κύριον|κύριος|Lord|N-ASM
+Ἰησοῦν,|Ἰησοῦς|Jesus|N-ASM
+καὶ|καί|and|CONJ
+σωθήσῃ|σῴζω|you will be saved|V-FPI-2S
+σὺ|σύ|you|P-2NS
+καὶ|καί|and|CONJ
+ὁ|ὁ|the|T-NSM
+οἶκός|οἶκος|household|N-NSM
+σου.|σύ|your|P-2GS`, "οἱ δέ: the article with δέ marks a change of subject, “and they”. εἶπαν takes first aorist endings on the second aorist stem."],
+["Romans 1:16a", `Οὐ|οὐ|not|PRT
+γὰρ|γάρ|for|CONJ
+ἐπαισχύνομαι|ἐπαισχύνομαι|I am ashamed of|V-PMI-1S
+τὸ|ὁ|the|T-ASN
+εὐαγγέλιον,|εὐαγγέλιον|gospel|N-ASN
+δύναμις|δύναμις|power|N-NSF
+γὰρ|γάρ|for|CONJ
+θεοῦ|θεός|of God|N-GSM
+ἐστιν|εἰμί|it is|V-PXI-3S
+εἰς|εἰς|for, leading to|PREP
+σωτηρίαν|σωτηρία|salvation|N-ASF
+παντὶ|πᾶς|to everyone|A-DSM
+τῷ|ὁ|the (one)|T-DSM
+πιστεύοντι,|πιστεύω|believing|V-PAP-DSM`],
+["Romans 3:23", `πάντες|πᾶς|all|A-NPM
+γὰρ|γάρ|for|CONJ
+ἥμαρτον|ἁμαρτάνω|sinned|V-AAI-3P
+καὶ|καί|and|CONJ
+ὑστεροῦνται|ὑστερέω|fall short of|V-PEI-3P
+τῆς|ὁ|the|T-GSF
+δόξης|δόξα|glory|N-GSF
+τοῦ|ὁ|the|T-GSM
+θεοῦ,|θεός|of God|N-GSM`, "ὑστερέω takes a genitive of the thing lacked."],
+["Romans 5:1", `Δικαιωθέντες|δικαιόω|having been justified|V-APP-NPM
+οὖν|οὖν|therefore|CONJ
+ἐκ|ἐκ|by, from|PREP
+πίστεως|πίστις|faith|N-GSF
+εἰρήνην|εἰρήνη|peace|N-ASF
+ἔχομεν|ἔχω|we have|V-PAI-1P
+πρὸς|πρός|with|PREP
+τὸν|ὁ|the|T-ASM
+θεὸν|θεός|God|N-ASM
+διὰ|διά|through|PREP
+τοῦ|ὁ|the|T-GSM
+κυρίου|κύριος|Lord|N-GSM
+ἡμῶν|ἐγώ|our|P-1GP
+Ἰησοῦ|Ἰησοῦς|Jesus|N-GSM
+Χριστοῦ,|Χριστός|Christ|N-GSM`, "Many manuscripts read ἔχωμεν (subjunctive: let us have peace). NA28 prints the indicative ἔχομεν."],
+["Romans 6:23", `τὰ|ὁ|the|T-NPN
+γὰρ|γάρ|for|CONJ
+ὀψώνια|ὀψώνιον|wages|N-NPN
+τῆς|ὁ|the|T-GSF
+ἁμαρτίας|ἁμαρτία|of sin|N-GSF
+θάνατος,|θάνατος|death|N-NSM
+τὸ|ὁ|the|T-NSN
+δὲ|δέ|but|CONJ
+χάρισμα|χάρισμα|free gift|N-NSN
+τοῦ|ὁ|the|T-GSM
+θεοῦ|θεός|of God|N-GSM
+ζωὴ|ζωή|life|N-NSF
+αἰώνιος|αἰώνιος|eternal|A-NSF
+ἐν|ἐν|in|PREP
+Χριστῷ|Χριστός|Christ|N-DSM
+Ἰησοῦ|Ἰησοῦς|Jesus|N-DSM
+τῷ|ὁ|the|T-DSM
+κυρίῳ|κύριος|Lord|N-DSM
+ἡμῶν.|ἐγώ|our|P-1GP`, "Both clauses omit the verb ἐστίν, which is common in Greek. Ἰησοῦ is dative here: Ἰησοῦς has -οῦ in genitive, dative, and vocative."],
+["Romans 8:1", `Οὐδὲν|οὐδείς|no|A-NSN
+ἄρα|ἄρα|therefore|PRT
+νῦν|νῦν|now|ADV
+κατάκριμα|κατάκριμα|condemnation|N-NSN
+τοῖς|ὁ|for those|T-DPM
+ἐν|ἐν|in|PREP
+Χριστῷ|Χριστός|Christ|N-DSM
+Ἰησοῦ.|Ἰησοῦς|Jesus|N-DSM`, "τοῖς ἐν Χριστῷ: the article turns a prepositional phrase into a noun, “those who are in Christ”."],
+["2 Corinthians 5:17", `ὥστε|ὥστε|therefore|CONJ
+εἴ|εἰ|if|CONJ
+τις|τις|anyone|X-NSM
+ἐν|ἐν|in|PREP
+Χριστῷ,|Χριστός|Christ|N-DSM
+καινὴ|καινός|new|A-NSF
+κτίσις·|κτίσις|creation|N-NSF
+τὰ|ὁ|the|T-NPN
+ἀρχαῖα|ἀρχαῖος|old things|A-NPN
+παρῆλθεν,|παρέρχομαι|passed away|V-AAI-3S
+ἰδοὺ|ἰδού|behold|INJ
+γέγονεν|γίνομαι|have come|V-RAI-3S
+καινά·|καινός|new things|A-NPN`, "Neuter plural subjects (τὰ ἀρχαῖα, καινά) take singular verbs."],
+["Galatians 2:20b", `ζῶ|ζάω|I live|V-PAI-1S
+δὲ|δέ|and|CONJ
+οὐκέτι|οὐκέτι|no longer|ADV
+ἐγώ,|ἐγώ|I|P-1NS
+ζῇ|ζάω|lives|V-PAI-3S
+δὲ|δέ|but|CONJ
+ἐν|ἐν|in|PREP
+ἐμοὶ|ἐγώ|me|P-1DS
+Χριστός·|Χριστός|Christ|N-NSM`],
+["Ephesians 2:8", `τῇ|ὁ|the|T-DSF
+γὰρ|γάρ|for|CONJ
+χάριτί|χάρις|by grace|N-DSF
+ἐστε|εἰμί|you are|V-PXI-2P
+σεσῳσμένοι|σῴζω|saved|V-RPP-NPM
+διὰ|διά|through|PREP
+πίστεως·|πίστις|faith|N-GSF
+καὶ|καί|and|CONJ
+τοῦτο|οὗτος|this|D-NSN
+οὐκ|οὐ|not|PRT
+ἐξ|ἐκ|from|PREP
+ὑμῶν,|σύ|yourselves|P-2GP
+θεοῦ|θεός|of God|N-GSM
+τὸ|ὁ|the|T-NSN
+δῶρον·|δῶρον|gift|N-NSN`, "ἐστε σεσῳσμένοι is a periphrastic perfect: you have been saved and remain saved. The neuter τοῦτο refers to the whole matter of salvation by grace through faith, not to the feminine πίστις alone."],
+["Ephesians 2:9", `οὐκ|οὐ|not|PRT
+ἐξ|ἐκ|from|PREP
+ἔργων,|ἔργον|works|N-GPN
+ἵνα|ἵνα|so that|CONJ
+μή|μή|not|PRT
+τις|τις|anyone|X-NSM
+καυχήσηται.|καυχάομαι|may boast|V-AMS-3S`],
+["Philippians 1:21", `Ἐμοὶ|ἐγώ|for me|P-1DS
+γὰρ|γάρ|for|CONJ
+τὸ|ὁ|the|T-NSN
+ζῆν|ζάω|to live|V-PAN
+Χριστὸς|Χριστός|Christ|N-NSM
+καὶ|καί|and|CONJ
+τὸ|ὁ|the|T-NSN
+ἀποθανεῖν|ἀποθνῄσκω|to die|V-AAN
+κέρδος.|κέρδος|gain|N-NSN`, "Articular infinitives as subjects: τὸ ζῆν, “living”; τὸ ἀποθανεῖν, “dying”."],
+["Philippians 4:4", `Χαίρετε|χαίρω|rejoice|V-PAM-2P
+ἐν|ἐν|in|PREP
+κυρίῳ|κύριος|the Lord|N-DSM
+πάντοτε·|πάντοτε|always|ADV
+πάλιν|πάλιν|again|ADV
+ἐρῶ,|λέγω|I will say|V-FAI-1S
+χαίρετε.|χαίρω|rejoice|V-PAM-2P`, "ἐρῶ is the future of λέγω, from a different root (ἐρ-)."],
+["Philippians 4:13", `πάντα|πᾶς|all things|A-APN
+ἰσχύω|ἰσχύω|I can do, have strength for|V-PAI-1S
+ἐν|ἐν|in, through|PREP
+τῷ|ὁ|the (one)|T-DSM
+ἐνδυναμοῦντί|ἐνδυναμόω|strengthening|V-PAP-DSM
+με.|ἐγώ|me|P-1AS`],
+["1 Thessalonians 5:16–18a", `Πάντοτε|πάντοτε|always|ADV
+χαίρετε,|χαίρω|rejoice|V-PAM-2P
+ἀδιαλείπτως|ἀδιαλείπτως|without ceasing|ADV
+προσεύχεσθε,|προσεύχομαι|pray|V-PMM-2P
+ἐν|ἐν|in|PREP
+παντὶ|πᾶς|everything|A-DSN
+εὐχαριστεῖτε·|εὐχαριστέω|give thanks|V-PAM-2P`],
+["1 Timothy 1:15b", `Χριστὸς|Χριστός|Christ|N-NSM
+Ἰησοῦς|Ἰησοῦς|Jesus|N-NSM
+ἦλθεν|ἔρχομαι|came|V-AAI-3S
+εἰς|εἰς|into|PREP
+τὸν|ὁ|the|T-ASM
+κόσμον|κόσμος|world|N-ASM
+ἁμαρτωλοὺς|ἁμαρτωλός|sinners|A-APM
+σῶσαι·|σῴζω|to save|V-AAN`, "σῶσαι is an infinitive of purpose."],
+["Hebrews 13:8", `Ἰησοῦς|Ἰησοῦς|Jesus|N-NSM
+Χριστὸς|Χριστός|Christ|N-NSM
+ἐχθὲς|ἐχθές|yesterday|ADV
+καὶ|καί|and|CONJ
+σήμερον|σήμερον|today|ADV
+ὁ|ὁ|the|T-NSM
+αὐτός,|αὐτός|same|P-NSM
+καὶ|καί|and|CONJ
+εἰς|εἰς|into|PREP
+τοὺς|ὁ|the|T-APM
+αἰῶνας.|αἰών|ages (forever)|N-APM`, "ὁ αὐτός: αὐτός in attributive position means “the same”."],
+["1 John 1:9", `ἐὰν|ἐάν|if|CONJ
+ὁμολογῶμεν|ὁμολογέω|we confess|V-PAS-1P
+τὰς|ὁ|the|T-APF
+ἁμαρτίας|ἁμαρτία|sins|N-APF
+ἡμῶν,|ἐγώ|our|P-1GP
+πιστός|πιστός|faithful|A-NSM
+ἐστιν|εἰμί|he is|V-PXI-3S
+καὶ|καί|and|CONJ
+δίκαιος|δίκαιος|righteous|A-NSM
+ἵνα|ἵνα|so that|CONJ
+ἀφῇ|ἀφίημι|he forgives|V-AAS-3S
+ἡμῖν|ἐγώ|us|P-1DP
+τὰς|ὁ|the|T-APF
+ἁμαρτίας|ἁμαρτία|sins|N-APF
+καὶ|καί|and|CONJ
+καθαρίσῃ|καθαρίζω|cleanses|V-AAS-3S
+ἡμᾶς|ἐγώ|us|P-1AP
+ἀπὸ|ἀπό|from|PREP
+πάσης|πᾶς|all|A-GSF
+ἀδικίας.|ἀδικία|unrighteousness|N-GSF`, "ἐάν with the subjunctive: a third class condition."],
+["1 John 4:8", `ὁ|ὁ|the (one)|T-NSM
+μὴ|μή|not|PRT
+ἀγαπῶν|ἀγαπάω|loving|V-PAP-NSM
+οὐκ|οὐ|not|PRT
+ἔγνω|γινώσκω|has known|V-AAI-3S
+τὸν|ὁ|the|T-ASM
+θεόν,|θεός|God|N-ASM
+ὅτι|ὅτι|because|CONJ
+ὁ|ὁ|the|T-NSM
+θεὸς|θεός|God|N-NSM
+ἀγάπη|ἀγάπη|love|N-NSF
+ἐστίν.|εἰμί|is|V-PXI-3S`, "Participles are negated with μή, indicatives with οὐ."],
+["1 John 4:19", `ἡμεῖς|ἐγώ|we|P-1NP
+ἀγαπῶμεν,|ἀγαπάω|love|V-PAI-1P
+ὅτι|ὅτι|because|CONJ
+αὐτὸς|αὐτός|he|P-NSM
+πρῶτος|πρῶτος|first|A-NSM
+ἠγάπησεν|ἀγαπάω|loved|V-AAI-3S
+ἡμᾶς.|ἐγώ|us|P-1AP`, "ἀγαπῶμεν can be indicative or subjunctive; the context favors the indicative."],
+["Revelation 22:20b", `Ναί,|ναί|yes|PRT
+ἔρχομαι|ἔρχομαι|I am coming|V-PMI-1S
+ταχύ.|ταχύ|soon, quickly|ADV
+Ἀμήν,|ἀμήν|amen|PRT
+ἔρχου|ἔρχομαι|come|V-PMM-2S
+κύριε|κύριος|Lord|N-VSM
+Ἰησοῦ.|Ἰησοῦς|Jesus|N-VSM`]
+];
+const VERSES = VERSES_RAW.map(([ref, body, note]) => ({ ref, note, toks: body.trim().split("\n").map(l => { const [text, lemma, gloss, code] = l.split("|"); return { text, lemma, gloss, code }; }) }));
+
+/* ---------- parsing codes ---------- */
+const T_ = { P: "present", I: "imperfect", F: "future", A: "aorist", R: "perfect", L: "pluperfect" };
+const V_ = { A: "active", M: "middle", P: "passive", E: "middle/passive", X: "" };
+const M_ = { I: "indicative", S: "subjunctive", M: "imperative", O: "optative", N: "infinitive", P: "participle" };
+const C_ = { N: "nominative", G: "genitive", D: "dative", A: "accusative", V: "vocative" };
+const NUM_ = { S: "singular", P: "plural" };
+const G_ = { M: "masculine", F: "feminine", N: "neuter" };
+const POS_ = { N: "Noun", T: "Article", A: "Adjective", P: "Pronoun", D: "Demonstrative pronoun", R: "Relative pronoun", X: "Indefinite pronoun", I: "Interrogative pronoun" };
+const IND_ = { PREP: "Preposition", CONJ: "Conjunction", ADV: "Adverb", PRT: "Particle", INJ: "Interjection" };
+const ORD = { 1: "1st", 2: "2nd", 3: "3rd" };
+function expand(code) {
+  if (IND_[code]) return IND_[code];
+  const [p, a, b] = code.split("-");
+  if (p === "N" && a === "PRI") return "Proper noun (indeclinable)";
+  if (p === "V") {
+    let s = cap([T_[a[0]], V_[a[1]], M_[a[2]]].filter(Boolean).join(" "));
+    if (a[2] === "P") s += `, ${C_[b[0]]} ${NUM_[b[1]]} ${G_[b[2]]}`;
+    else if (a[2] !== "N") s += `, ${ORD[b[0]]} person ${NUM_[b[1]]}`;
+    return s;
+  }
+  if (/^\d/.test(a)) return `Personal pronoun, ${ORD[a[0]]} person, ${C_[a[1]]} ${NUM_[a[2]]}`;
+  return `${POS_[p]}, ${C_[a[0]]} ${NUM_[a[1]]} ${G_[a[2]]}`;
+}
+const inflected = code => !IND_[code] && code !== "N-PRI";
+const TENSES_BY_MOOD = { I: "PIFARL", S: "PA", M: "PA", O: "PA", N: "PFAR", P: "PFAR" };
+function distractors(code, n = 3) {
+  const [p, a, b] = code.split("-");
+  const out = new Set();
+  for (let guard = 0; guard < 400 && out.size < n; guard++) {
+    let c;
+    if (p === "V") {
+      let t = a[0], v = a[1], m = a[2], x = b || "";
+      const changes = 1 + Math.floor(Math.random() * 2);
+      for (let k = 0; k < changes; k++) {
+        const r = Math.random();
+        if (r < .3) t = pick(TENSES_BY_MOOD[m].split(""));
+        else if (r < .5 && v !== "X") v = pick(["A", "M", "P"]);
+        else if (r < .65 && "ISMO".includes(m)) m = pick(["I", "S", "M"]);
+        else if (m === "P") { const i = Math.floor(Math.random() * 3); x = x.slice(0, i) + pick(i === 0 ? ["N", "G", "D", "A"] : i === 1 ? ["S", "P"] : ["M", "F", "N"]) + x.slice(i + 1); }
+        else if (m !== "N") { x = Math.random() < .5 ? pick(["1", "2", "3"]) + x[1] : x[0] + pick(["S", "P"]); }
+        else t = pick("PA".split(""));
+      }
+      if (m === "M" && x[0] === "1") x = "2" + x[1];
+      if (!TENSES_BY_MOOD[m].includes(t)) t = "P";
+      c = `V-${t}${v}${m}` + (m === "N" ? "" : "-" + x);
+    } else if (/^\d/.test(a)) {
+      let [pp, cc, nn] = a.split("");
+      const r = Math.random();
+      if (r < .5) cc = pick(["N", "G", "D", "A"]); else if (r < .8) nn = pick(["S", "P"]); else pp = pick(["1", "2"]);
+      c = `${p}-${pp}${cc}${nn}`;
+    } else {
+      let [cc, nn, gg] = a.split("");
+      for (let k = 0; k < 1 + Math.floor(Math.random() * 2); k++) {
+        const r = Math.random();
+        if (r < .45) cc = pick(["N", "G", "D", "A"]); else if (r < .75) nn = pick(["S", "P"]); else gg = pick(["M", "F", "N"]);
+      }
+      c = `${p}-${cc}${nn}${gg}`;
+    }
+    if (c !== code) out.add(c);
+  }
+  return [...out];
+}
+
+/* ---------- routing ---------- */
+const VIEWS = ["paradigms", "drill", "vocab", "verses"];
+let currentView = null;
+function show(view) {
+  if (!VIEWS.includes(view)) view = "paradigms";
+  currentView = view;
+  for (const v of VIEWS) {
+    $("#view-" + v).hidden = v !== view;
+    const t = $("#tab-" + v); t.setAttribute("aria-selected", v === view ? "true" : "false");
+  }
+  LS.set("view", view);
+  if (location.hash !== "#" + view) history.replaceState(null, "", "#" + view);
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => { show(b.dataset.view); window.scrollTo({ top: 0 }); }));
+
+/* ---------- paradigms view ---------- */
+let currentSheet = LS.get("sheet", "article");
+if (!SHEET[currentSheet]) currentSheet = "article";
+const groups = [...new Set(SHEETS.map(s => s.group))];
+function buildSidebar() {
+  const sb = $("#sidebar"); sb.replaceChildren();
+  const sel = $("#sheet-select"); sel.replaceChildren();
+  for (const g of groups) {
+    const grp = el("div", { class: "grp" }, el("div", { class: "label", text: g }));
+    const og = el("optgroup", { label: g });
+    for (const s of SHEETS.filter(s => s.group === g)) {
+      const b = el("button", { class: "sheet-link" + (s.id === "eimi" ? " gk" : ""), type: "button", "data-id": s.id, text: s.title, onclick: () => openSheet(s.id) });
+      grp.append(b);
+      og.append(el("option", { value: s.id, text: s.title }));
+    }
+    sb.append(grp); sel.append(og);
+  }
+  sel.addEventListener("change", () => openSheet(sel.value));
+}
+function caseRows(n) { return CASE_AB.slice(0, n); }
+function renderTable(t) {
+  const box = el("figure", { class: "ptab" + (t.type === "adj" || t.type === "ptc" ? " wide" : ""), style: "margin:0" });
+  const isGreekTitle = /[Ͱ-Ͽἀ-῿]/.test(t.title.split(" ")[0]);
+  const h = el("h3");
+  if (isGreekTitle) h.append(gk(t.title));
+  else h.append(t.title);
+  if (t.gloss) h.append(" ", el("span", { class: "gl", text: "· " + t.gloss }));
+  box.append(h);
+  const scroll = el("div", { class: "scroll" });
+  if (t.type === "noun") {
+    const n = t.sg.length;
+    const tb = el("tbody");
+    caseRows(n).forEach((c, i) => tb.append(el("tr", {}, el("th", { scope: "row", text: c }), gk(t.sg[i], "td"), gk(t.pl[i], "td"))));
+    scroll.append(el("table", { class: "par" }, el("thead", {}, el("tr", {}, el("th", {}), el("th", { text: "Singular" }), el("th", { text: "Plural" }))), tb));
+  } else if (t.type === "adj" || t.type === "ptc") {
+    const pair = el("div", { class: "pair" });
+    for (const num of ["sg", "pl"]) {
+      if (!t.cols.some(c => c[num])) continue;
+      const n = Math.max(...t.cols.map(c => c[num].length));
+      const head = el("tr", {}, el("th", {}), ...t.cols.map(c => el("th", { text: c.g ? GENDER_LABEL[c.g] : "" })));
+      const tb = el("tbody");
+      caseRows(n).forEach((c, i) => tb.append(el("tr", {}, el("th", { scope: "row", text: c }), ...t.cols.map(col => gk((col[num][i] || "").replace("/", " / "), "td")))));
+      pair.append(el("div", {}, el("div", { class: "caption", text: num === "sg" ? "Singular" : "Plural" }), el("table", { class: "par" }, el("thead", {}, head), tb)));
+    }
+    scroll.append(pair);
+  } else if (t.type === "verb") {
+    const tb = el("tbody");
+    const imp = t.mood === "imperative";
+    const persons = imp ? ["2nd", "3rd"] : PERSONS;
+    persons.forEach((p, i) => {
+      const sgI = imp ? i : i, plI = imp ? i + 2 : i + 3;
+      tb.append(el("tr", {}, el("th", { scope: "row", text: p }), gk(t.forms[sgI], "td"), gk(t.forms[plI], "td")));
+    });
+    scroll.append(el("table", { class: "par" }, el("thead", {}, el("tr", {}, el("th", {}), el("th", { text: "Singular" }), el("th", { text: "Plural" }))), tb));
+  } else if (t.type === "inf") {
+    const tb = el("tbody");
+    for (const r of t.rows) {
+      const label = cap([r[0], voiceLabel(r[1])].filter(Boolean).join(" "));
+      tb.append(el("tr", {}, el("th", { scope: "row", text: label }), gk(r[2], "td"), r[3] ? el("td", {}, gk(r[3]), el("span", { class: "gl", style: "font-family:var(--font-ui);font-size:.9rem;color:var(--muted)", text: "  " + r[4] })) : null));
+    }
+    scroll.append(el("table", { class: "par" }, tb));
+  }
+  box.append(scroll);
+  if (t.note) box.append(el("p", { class: "note", text: t.note }));
+  return box;
+}
+function openSheet(id) {
+  currentSheet = id; LS.set("sheet", id);
+  const s = SHEET[id];
+  document.querySelectorAll(".sheet-link").forEach(b => b.setAttribute("aria-current", b.dataset.id === id ? "true" : "false"));
+  $("#sheet-select").value = id;
+  const box = $("#sheet"); box.replaceChildren();
+  const head = el("div", { class: "sheet-head" },
+    el("div", { class: "label", text: s.group }),
+    id === "eimi" || id === "v-mi" ? el("h2", { lang: "grc", text: s.title }) : el("h2", { text: s.title }),
+    el("p", { text: s.intro }),
+    el("div", { class: "row" }, el("button", { class: "btn", type: "button", text: "Drill this sheet", onclick: () => { drillSel = new Set([id]); saveDrillSel(); renderDrillChecks(); nextItem(); show("drill"); window.scrollTo({ top: 0 }); } })));
+  const grid = el("div", { class: "tables" }, ...s.tables.map(renderTable));
+  box.append(head, grid);
+}
+
+/* ---------- drill view ---------- */
+const FIELD_OPTS = {
+  tense: ["present", "imperfect", "future", "aorist", "perfect", "pluperfect"],
+  voice: ["active", "middle", "passive"],
+  mood: ["indicative", "subjunctive", "imperative", "optative", "infinitive", "participle"],
+  person: ["1st", "2nd", "3rd"],
+  number: ["singular", "plural"],
+  case: ["nominative", "genitive", "dative", "accusative", "vocative"],
+  gender: ["masculine", "feminine", "neuter"]
+};
+const FIELD_LABEL = { lemma: "Lexical form", tense: "Tense", voice: "Voice", mood: "Mood", person: "Person", number: "Number", case: "Case", gender: "Gender" };
+let drillSel = new Set(LS.get("drillSel", ["article", "n2", "v-pres"]).filter(id => SHEET[id]));
+const saveDrillSel = () => LS.set("drillSel", [...drillSel]);
+let cur = null, answers = {}, checked = false, lemmaOpts = [], lastKey = null;
+let stats = { right: 0, total: 0, streak: 0 };
+function pool() { return ITEMS.filter(i => drillSel.has(i.sheet)); }
+function renderDrillChecks() {
+  const box = $("#drill-checks"); box.replaceChildren();
+  for (const g of groups) {
+    const grp = el("div", { class: "grp" }, el("div", { class: "label", text: g }));
+    for (const s of SHEETS.filter(s => s.group === g)) {
+      const id = "chk-" + s.id;
+      const cb = el("input", { type: "checkbox", id, checked: drillSel.has(s.id) });
+      cb.addEventListener("change", () => { cb.checked ? drillSel.add(s.id) : drillSel.delete(s.id); saveDrillSel(); if (!cur || !drillSel.has(cur.sheet)) nextItem(); });
+      grp.append(el("label", { for: id }, cb, el("span", { class: s.id === "eimi" || s.id === "v-mi" ? "gk" : "", text: s.title })));
+    }
+    box.append(grp);
+  }
+}
+$("#drill-all").addEventListener("click", () => { drillSel = new Set(SHEETS.map(s => s.id)); saveDrillSel(); renderDrillChecks(); nextItem(); });
+$("#drill-none").addEventListener("click", () => { drillSel = new Set(); saveDrillSel(); renderDrillChecks(); nextItem(); });
+function visibleFields() {
+  const f = [];
+  if (lemmaOpts.length > 1) f.push("lemma");
+  if (cur.kind === "nominal") { f.push("case", "number"); if (cur.gender) f.push("gender"); }
+  else {
+    f.push("tense"); if (cur.voice !== null) f.push("voice"); f.push("mood");
+    if (answers.mood === "participle") f.push("case", "number", "gender");
+    else if (answers.mood && answers.mood !== "infinitive") f.push("person", "number");
+  }
+  return f;
+}
+function fieldOk(field, cand, given) {
+  const exp = cand[field];
+  if (field === "voice") { if (exp === null) return true; if (exp === "mp") return given === "middle" || given === "passive"; }
+  if (field === "gender" && exp === "mf") return given === "masculine" || given === "feminine";
+  return exp === given;
+}
+function nextItem() {
+  checked = false; answers = {};
+  const p = pool();
+  if (!p.length) { cur = null; renderDrill(); return; }
+  let it, guard = 0;
+  do { it = pick(p); } while (it.key === lastKey && p.length > 1 && ++guard < 20);
+  cur = it; lastKey = it.key;
+  const lemmas = [...new Set(p.map(i => i.lemma))];
+  lemmaOpts = lemmas.length > 1 ? shuffle([cur.lemma, ...shuffle(lemmas.filter(l => l !== cur.lemma)).slice(0, 3)]) : [];
+  renderDrill();
+}
+function candidates() { return ITEMS.filter(i => i.key === cur.key); }
+function check() {
+  const fields = visibleFields();
+  if (fields.some(f => !answers[f])) return;
+  checked = true;
+  const cands = candidates();
+  const score = c => fields.filter(f => fieldOk(f, c, answers[f])).length;
+  const best = cands.reduce((a, c) => score(c) > score(a) ? c : a, cands[0]);
+  const ok = score(best) === fields.length;
+  stats.total++; if (ok) { stats.right++; stats.streak++; } else stats.streak = 0;
+  renderDrill(best, ok, cands);
+}
+function renderStats() {
+  $("#drill-stats").replaceChildren(
+    el("span", {}, el("b", { text: String(stats.right) }), ` of ${stats.total} correct`),
+    el("span", {}, "Streak ", el("b", { text: String(stats.streak) })));
+}
+function renderDrill(best, ok, cands) {
+  renderStats();
+  const card = $("#drill-card"); card.replaceChildren();
+  if (!cur) { card.append(el("p", { class: "hint", text: "No paradigms selected. Tick at least one sheet in the panel to start drilling." })); return; }
+  card.append(gk(cur.key, "div"));
+  card.lastChild.className = "bigform gk";
+  card.append(el("div", { class: "subform", text: drillSel.size > 1 ? "" : SHEET[cur.sheet].title }));
+  for (const f of visibleFields()) {
+    const opts = f === "lemma" ? lemmaOpts : FIELD_OPTS[f];
+    const row = el("div", { class: "opts" });
+    for (const o of opts) {
+      let cls = "opt" + (f === "lemma" ? " gk" : "");
+      if (checked && best) {
+        if (answers[f] === o) cls += fieldOk(f, best, o) ? " right" : " wrong";
+        else if (!fieldOk(f, best, answers[f]) && fieldOk(f, best, o)) cls += " right";
+      }
+      row.append(el("button", { class: cls, type: "button", "aria-pressed": answers[f] === o ? "true" : "false", disabled: checked, text: o,
+        onclick: () => { answers[f] = o; if (f === "mood") { delete answers.person; delete answers.case; delete answers.gender; delete answers.number; } renderDrill(); } }));
+    }
+    card.append(el("div", { class: "field" }, el("div", { class: "label", text: FIELD_LABEL[f] }), row));
+  }
+  const ready = visibleFields().every(f => answers[f]);
+  if (!checked) {
+    card.append(el("div", { class: "row" },
+      el("button", { class: "btn primary", type: "button", id: "drill-check", disabled: !ready, text: "Check", onclick: check }),
+      el("button", { class: "btn", type: "button", text: "Skip", onclick: nextItem })));
+  } else {
+    const fb = el("div", { class: "feedback " + (ok ? "ok" : "no") });
+    fb.append(el("div", { class: "verdict", text: ok ? "Correct." : "Not quite." }));
+    const seen = new Set();
+    const lines = cands.filter(c => { const k = c.lemma + describe(c); if (seen.has(k)) return false; seen.add(k); return true; });
+    fb.append(el("p", { text: lines.length > 1 ? `${cur.key} can be parsed ${lines.length} ways:` : `${cur.key} is:` }));
+    fb.append(el("ul", {}, ...lines.map(c => el("li", {}, describe(c), " of ", gk(c.lemma), c.gloss ? ` (${c.gloss})` : ""))));
+    fb.append(el("p", { class: "hint", text: best.note }));
+    card.append(fb);
+    card.append(el("div", { class: "row" },
+      el("button", { class: "btn primary", type: "button", id: "drill-next", text: "Next form", onclick: nextItem }),
+      el("button", { class: "btn", type: "button", text: "See the paradigm", onclick: () => { openSheet(best.sheet); show("paradigms"); window.scrollTo({ top: 0 }); } })));
+    $("#drill-next").focus({ preventScroll: true });
+  }
+}
+document.addEventListener("keydown", e => {
+  if (currentView !== "drill" || e.key !== "Enter" || !cur) return;
+  if (e.target.closest && e.target.closest("button, input, select") && e.target.id !== "drill-next") return;
+  e.preventDefault();
+  checked ? nextItem() : check();
+});
+
+/* ---------- vocabulary view ---------- */
+let vBands = new Set(LS.get("vBands", ["b500", "b200"]));
+let vDir = LS.get("vDir", "gr");
+let vBox = LS.get("vBox", {});
+let vCard = null, vRevealed = false, vLast = null, resetArmed = false;
+function vPool() { return VOCAB.filter(w => BANDS.some(b => vBands.has(b.id) && b.test(w.freq))); }
+function renderBands() {
+  const box = $("#bands"); box.replaceChildren();
+  for (const b of BANDS) box.append(el("button", { class: "chip", type: "button", "aria-pressed": vBands.has(b.id) ? "true" : "false", text: b.label,
+    onclick: () => { vBands.has(b.id) ? vBands.delete(b.id) : vBands.add(b.id); LS.set("vBands", [...vBands]); renderBands(); nextCard(); } }));
+  const d = $("#direction"); d.replaceChildren();
+  for (const [id, label] of [["gr", "Greek → English"], ["en", "English → Greek"]])
+    d.append(el("button", { class: "chip", type: "button", "aria-pressed": vDir === id ? "true" : "false", text: label,
+      onclick: () => { vDir = id; LS.set("vDir", id); renderBands(); renderCard(); } }));
+}
+function renderBoxes() {
+  const p = vPool(); const counts = [0, 0, 0, 0, 0];
+  for (const w of p) counts[vBox[w.lex] || 0]++;
+  $("#boxes").replaceChildren(...counts.map((c, i) => el("div", {}, el("b", { text: String(c) }), `Box ${i + 1}`)));
+}
+const WEIGHT = [10, 6, 3, 2, 1];
+function nextCard() {
+  vRevealed = false;
+  const p = vPool();
+  if (!p.length) { vCard = null; renderCard(); return; }
+  let w, guard = 0;
+  do {
+    const total = p.reduce((s, x) => s + WEIGHT[vBox[x.lex] || 0], 0);
+    let r = Math.random() * total;
+    w = p.find(x => (r -= WEIGHT[vBox[x.lex] || 0]) < 0) || p[0];
+  } while (w === vLast && p.length > 1 && ++guard < 20);
+  vCard = w; vLast = w; renderCard();
+}
+function grade(knew) {
+  const b = vBox[vCard.lex] || 0;
+  vBox[vCard.lex] = knew ? Math.min(4, b + 1) : 0;
+  LS.set("vBox", vBox); nextCard();
+}
+function renderCard() {
+  renderBoxes();
+  const c = $("#flash"); c.replaceChildren();
+  if (!vCard) { c.append(el("p", { class: "hint", text: "Choose at least one frequency band to begin." })); return; }
+  const box = (vBox[vCard.lex] || 0) + 1;
+  c.append(el("div", { class: "meta", text: `Occurs about ${vCard.freq.toLocaleString()} times · Box ${box}` }));
+  if (vDir === "gr") c.append(el("div", { class: "front gk", lang: "grc", text: vCard.lex }));
+  else c.append(el("div", { class: "front en", text: vCard.gloss }));
+  const back = el("div", { class: "back" });
+  if (vRevealed) back.append(vDir === "gr" ? document.createTextNode(vCard.gloss) : gk(vCard.lex));
+  c.append(back);
+  if (!vRevealed) c.append(el("div", { class: "row", style: "justify-content:center" }, el("button", { class: "btn primary", type: "button", id: "v-show", text: "Show answer", onclick: () => { vRevealed = true; renderCard(); } })));
+  else c.append(el("div", { class: "row", style: "justify-content:center" },
+    el("button", { class: "btn", type: "button", text: "Missed it", onclick: () => grade(false) }),
+    el("button", { class: "btn primary", type: "button", text: "Knew it", onclick: () => grade(true) })));
+}
+$("#vocab-reset").addEventListener("click", () => {
+  if (!resetArmed) { resetArmed = true; $("#reset-confirm").hidden = false; setTimeout(() => { resetArmed = false; $("#reset-confirm").hidden = true; }, 4000); return; }
+  vBox = {}; LS.set("vBox", vBox); resetArmed = false; $("#reset-confirm").hidden = true; nextCard();
+});
+function renderWordTable() {
+  const q = stripMarks($("#vocab-search").value.trim());
+  const rows = VOCAB.filter(w => !q || stripMarks(w.lex).includes(q) || w.gloss.toLowerCase().includes(q));
+  $("#vocab-count").textContent = `${rows.length} of ${VOCAB.length} words`;
+  $("#wordtable").replaceChildren(
+    el("thead", {}, el("tr", {}, el("th", { text: "Greek" }), el("th", { text: "Meaning" }), el("th", { text: "NT", style: "text-align:right" }))),
+    el("tbody", {}, ...rows.map(w => el("tr", {}, gk(w.lex, "td"), el("td", { text: w.gloss }), el("td", { class: "num", text: String(w.freq) })))));
+}
+$("#vocab-search").addEventListener("input", renderWordTable);
+document.addEventListener("keydown", e => {
+  if (currentView !== "vocab" || !vCard || e.target.closest("input")) return;
+  if (e.key === " " && !vRevealed) { e.preventDefault(); vRevealed = true; renderCard(); }
+});
+
+/* ---------- verses view ---------- */
+let vIdx = Math.min(LS.get("verse", 10), VERSES.length - 1);
+let vSel = null, vMode = "explore", quiz = null;
+function buildVerseSelect() {
+  const s = $("#v-select");
+  VERSES.forEach((v, i) => s.append(el("option", { value: String(i), text: v.ref })));
+  s.addEventListener("change", () => openVerse(+s.value));
+  $("#v-prev").addEventListener("click", () => openVerse((vIdx - 1 + VERSES.length) % VERSES.length));
+  $("#v-next").addEventListener("click", () => openVerse((vIdx + 1) % VERSES.length));
+}
+function renderModes() {
+  const m = $("#v-mode"); m.replaceChildren();
+  for (const [id, label] of [["explore", "Explore"], ["quiz", "Quiz"]])
+    m.append(el("button", { class: "chip", type: "button", "aria-pressed": vMode === id ? "true" : "false", text: label,
+      onclick: () => { vMode = id; renderModes(); if (id === "quiz") newQuiz(); else { quiz = null; renderVerse(); } } }));
+}
+const clean = t => t.replace(/[,.;··;:]/g, "");
+function openVerse(i) {
+  vIdx = i; LS.set("verse", i); $("#v-select").value = String(i); vSel = null;
+  if (vMode === "quiz") newQuiz(); else renderVerse();
+}
+function renderVerse() {
+  const v = VERSES[vIdx];
+  $("#v-ref").textContent = v.ref;
+  const box = $("#v-text"); box.replaceChildren();
+  v.toks.forEach((t, i) => {
+    let cls = "tok";
+    if (quiz && quiz.idx === i) cls += " target";
+    else if (vSel === i) cls += " sel";
+    box.append(el("span", { class: cls, role: "button", tabindex: "0", text: t.text,
+      onclick: () => { if (vMode === "quiz") return; vSel = i; renderVerse(); },
+      onkeydown: e => { if ((e.key === "Enter" || e.key === " ") && vMode !== "quiz") { e.preventDefault(); vSel = i; renderVerse(); } } }), " ");
+  });
+  const note = $("#v-note");
+  note.hidden = !v.note; note.textContent = v.note || "";
+  renderInfo();
+}
+function tokInfo(t) {
+  return el("div", { style: "display:flex;flex-direction:column;gap:10px" },
+    el("div", { class: "form gk", lang: "grc", text: clean(t.text) }),
+    el("dl", {},
+      el("dt", { text: "Lexical form" }), el("dd", {}, gk(t.lemma)),
+      el("dt", { text: "Gloss" }), el("dd", { text: t.gloss }),
+      el("dt", { text: "Parsing" }), el("dd", { text: expand(t.code) }),
+      el("dt", { text: "Code" }), el("dd", {}, el("code", { text: t.code }))));
+}
+function renderInfo() {
+  const box = $("#v-info"); box.replaceChildren();
+  const v = VERSES[vIdx];
+  if (vMode === "quiz" && quiz) {
+    const t = v.toks[quiz.idx];
+    box.append(el("h3", { text: "Parse the highlighted word" }), el("div", { class: "form gk", lang: "grc", text: clean(t.text) }),
+      el("p", { class: "hint", text: `Lexical form: ${t.lemma}` }));
+    const opts = el("div", { class: "qopts" });
+    for (const code of quiz.opts) {
+      let cls = "opt";
+      if (quiz.answer) { if (code === t.code) cls += " right"; else if (code === quiz.answer) cls += " wrong"; }
+      opts.append(el("button", { class: cls, type: "button", disabled: !!quiz.answer, text: expand(code), onclick: () => { quiz.answer = code; quiz.done++; if (code === t.code) quiz.right++; renderInfo(); } }));
+    }
+    box.append(opts);
+    if (quiz.answer) {
+      box.append(el("p", { class: "hint", text: `${quiz.answer === t.code ? "Correct." : "Not quite."} ${clean(t.text)}: ${t.gloss}.` }),
+        el("div", { class: "row" },
+          el("button", { class: "btn primary", type: "button", text: "Another word", onclick: () => newQuiz(true) }),
+          el("button", { class: "btn", type: "button", text: "Next verse", onclick: () => openVerse((vIdx + 1) % VERSES.length) })));
+    }
+    box.append(el("p", { class: "hint", text: `Quiz score this session: ${quiz.right} of ${quiz.done}` }));
+    return;
+  }
+  if (vSel == null) {
+    box.append(el("h3", { text: "Word details" }), el("p", { class: "hint", text: "Tap a word in the verse to see its lexical form, gloss, and full parsing." }));
+    const nInfl = v.toks.filter(t => inflected(t.code)).length;
+    box.append(el("p", { class: "hint", text: `${v.toks.length} words in this selection, ${nInfl} of them inflected.` }));
+    return;
+  }
+  box.append(tokInfo(v.toks[vSel]));
+}
+let quizScore = { right: 0, done: 0 };
+function newQuiz(sameVerse) {
+  const v = VERSES[vIdx];
+  const idxs = v.toks.map((t, i) => i).filter(i => inflected(v.toks[i].code) && (!quiz || i !== quiz.idx || v.toks.length < 3));
+  if (quiz) quizScore = { right: quiz.right, done: quiz.done };
+  const idx = pick(idxs);
+  const code = v.toks[idx].code;
+  quiz = { idx, answer: null, opts: shuffle([code, ...distractors(code)]), right: quizScore.right, done: quizScore.done };
+  vSel = null; renderVerse();
+}
+
+/* ---------- boot ---------- */
+buildSidebar();
+openSheet(currentSheet);
+renderDrillChecks();
+nextItem();
+renderBands();
+nextCard();
+renderWordTable();
+buildVerseSelect();
+renderModes();
+openVerse(vIdx);
+const hash = location.hash.replace("#", "");
+show(VIEWS.includes(hash) ? hash : LS.get("view", "paradigms"));
+</script>
+<script>
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  navigator.serviceWorker.register("/greek/sw.js", { scope: "/greek/" }).catch(() => {});
+}
+</script>
+</body>
+</html>
