@@ -15,6 +15,8 @@ async function sha256Hex(input: string) {
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (pathname === "/login") return NextResponse.next();
+  // The Greek workbook is a public, installable study app with no private data.
+  if (pathname === "/greek" || pathname.startsWith("/greek/")) return NextResponse.next();
 
   const appPassword = process.env.APP_PASSWORD;
   if (!appPassword) {
